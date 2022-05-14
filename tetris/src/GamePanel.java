@@ -45,7 +45,6 @@ public class GamePanel extends JPanel implements Runnable{
 		add(lblStage);
 		
 		lblStageNum = new JLabel("1", SwingConstants.CENTER);
-//		lblStageNum.setText("1");
         lblStageNum.setFont(new Font("arial",Font.PLAIN,13));
         lblStageNum.setBounds(310,50,160,15);
 		add(lblStageNum);
