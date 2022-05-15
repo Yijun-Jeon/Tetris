@@ -6,7 +6,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	private int end;
 	private int random1, random2;
-	private int random;
+	private Color color;
 	private BlockPanel[] nextBlocks;
 	private int score;
 	private int width, height;
@@ -79,7 +79,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		nextBlocks = new BlockPanel[4];
 		for(int i=0;i<4;i++) {
-			random = (int)(Math.random()*7);
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
 			nextBlocks[i].setBlockColor(Color.BLUE);
@@ -103,17 +102,18 @@ public class GamePanel extends JPanel implements Runnable{
 		page.draw3DRect(15, 465, 248, 5, true);//¹Ù´Ú
 		page.draw3DRect(15, 65, 248, 5, true);//ÃµÀå
 		
-		page.setColor(Color.orange);
+		page.setColor(color);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
 		gameOverCheck();
-		previewBlock(page);
+		//previewBlock(page);
 		removeLine(count1, count2, page);
 		blockToWall();
 		makeWall(page);
 		
 		if (end == 1) {
+			blockToNext();
 			random2 = (int)(Math.random()*7);
 			end = 0;
 		}
@@ -189,13 +189,24 @@ public class GamePanel extends JPanel implements Runnable{
 						end = 1;
 						rotation = 0;
 						random1 = random2;
+						//random1 = nextBlocks[0].getBlockNum();
+						//color = nextBlocks[0].getBlockColor();
 					}
 				}
 			}
 		}catch(ArrayIndexOutOfBoundsException e) { System.out.println("Error"); };
-		for (int i = 0; i < 4; i++)
-			System.out.print("("+curY[i]+","+curX[i]+")");
-		System.out.println();
+	}
+	
+	public void blockToNext() {
+		random1 = nextBlocks[0].getBlockNum();
+		color = nextBlocks[0].getBlockColor();
+		for(int i=0;i<3;i++) {
+			nextBlocks[i].setBlockNum(nextBlocks[i+1].getBlockNum());
+			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
+		}
+		nextBlocks[3].setBlockNum((int)(Math.random()*7));
+		//nextBlocks[3].setBlockColor(Color.ORANGE);
+		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
 	
 	public void rotationCheck() {
