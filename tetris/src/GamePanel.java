@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -12,6 +14,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private int count1, count2;
 	private boolean gameOver;
 	private int curX[], curY[];
+	private JPanel nextPanel;
 	private JButton btn;
 	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog;
 	private JDialog JD;
@@ -67,6 +70,12 @@ public class GamePanel extends JPanel implements Runnable{
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
 		JD.add(lblDialog);
+		
+		nextPanel = new JPanel();
+		nextPanel.setBounds(310,120,160,380);
+		nextPanel.setBackground(Color.white);
+		nextPanel.setBorder(BorderFactory.createTitledBorder("NEXT"));
+		this.add(nextPanel);
 		
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
