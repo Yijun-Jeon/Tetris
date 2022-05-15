@@ -5,16 +5,24 @@ import javax.swing.JPanel;
 
 public class BlockPanel extends JPanel {
 	
-	public int blockNum;
-	public Color blockColor;
+	private int blockNum;
+	private Color blockColor;
 	
 	BlockPanel(){
-		
 		blockNum = 0;
 		blockColor = Color.ORANGE;
-		
 		setPreferredSize(new Dimension(80,80));
 	}
+	BlockPanel(int n, Color color){
+		blockNum = n;
+		blockColor = color;
+		setPreferredSize(new Dimension(80,80));
+	}
+	public int getBlockNum() {return blockNum;}
+	public Color getBlockColor() {return blockColor;}
+	public void setBlockNum(int num) {blockNum = num;}
+	public void setBlockColor(Color color) {blockColor = color;}
+	
 	
 	public void paintComponent(Graphics g) {
 		g.setColor(blockColor);

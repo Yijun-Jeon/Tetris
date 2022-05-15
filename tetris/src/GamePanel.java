@@ -6,6 +6,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	private int end;
 	private int random1, random2;
+	private int random;
 	private BlockPanel[] nextBlocks;
 	private int score;
 	private int width, height;
@@ -78,8 +79,10 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		nextBlocks = new BlockPanel[4];
 		for(int i=0;i<4;i++) {
+			random = (int)(Math.random()*7);
 			nextBlocks[i] = new BlockPanel();
-			nextBlocks[i].blockNum = i;
+			nextBlocks[i].setBlockNum((int)(Math.random()*7));
+			nextBlocks[i].setBlockColor(Color.BLUE);
 			nextPanel.add(nextBlocks[i]);
 		}
 		
