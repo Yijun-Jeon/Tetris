@@ -5,19 +5,22 @@ import javax.swing.JPanel;
 
 public class BlockPanel extends JPanel {
 	
-	private int block;
+	public int blockNum;
+	public Color blockColor;
 	
 	BlockPanel(){
 		
-		block = 0;
+		blockNum = 0;
+		blockColor = Color.ORANGE;
 		
 		setPreferredSize(new Dimension(80,80));
 	}
 	
 	public void paintComponent(Graphics g) {
+		g.setColor(blockColor);
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				if (TetrisModel.BLOCKS[block][0][i][j] == 1)
+				if (TetrisModel.BLOCKS[blockNum][0][i][j] == 1)
 					g.fill3DRect(j*TetrisModel.BLOCKSIZE,  i*TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 	}
 	

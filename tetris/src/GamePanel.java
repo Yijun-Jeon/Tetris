@@ -1,13 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Queue;
-import java.util.LinkedList;
 
 public class GamePanel extends JPanel implements Runnable{
 
 	private int end;
 	private int random1, random2;
+	private BlockPanel[] nextBlocks;
 	private int score;
 	private int width, height;
 	private int rotation;
@@ -76,6 +75,13 @@ public class GamePanel extends JPanel implements Runnable{
 		nextPanel.setBackground(Color.white);
 		nextPanel.setBorder(BorderFactory.createTitledBorder("NEXT"));
 		this.add(nextPanel);
+		
+		nextBlocks = new BlockPanel[4];
+		for(int i=0;i<4;i++) {
+			nextBlocks[i] = new BlockPanel();
+			nextBlocks[i].blockNum = i;
+			nextPanel.add(nextBlocks[i]);
+		}
 		
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
