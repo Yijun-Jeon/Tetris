@@ -3,8 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MyTetrisPanel extends JPanel {
-
-	JPanel blockPanel;
+	
 	GamePanel gamePanel;
 	
 	public MyTetrisPanel() {
@@ -17,11 +16,5 @@ public class MyTetrisPanel extends JPanel {
 		gamePanel.setBackground(Color.white);
 		gamePanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		add(gamePanel);
-		
-		blockPanel = new JPanel();
-		blockPanel.setBounds(310,120,160,380);
-		blockPanel.setBackground(Color.white);
-		blockPanel.setBorder(BorderFactory.createTitledBorder("NEXT"));
-		gamePanel.add(blockPanel);
 	}
 }
