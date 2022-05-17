@@ -40,11 +40,13 @@ public class GamePanel extends JPanel implements Runnable{
 		curX = new int [4];
 		curY = new int [4];
 		
+		color = Color.ORANGE;
+		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(680,600));
 		
 		
-		btn = new JButton("¿Áµµ¿¸");
+		btn = new JButton("Ïû¨ÎèÑÏ†Ñ");
 		btn.addActionListener(new BtnListener());
 		
 		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
@@ -74,7 +76,7 @@ public class GamePanel extends JPanel implements Runnable{
         lblDialog = new JLabel();
         
         JD = new JDialog();
-		JD.setTitle("¡°ºˆ");
+		JD.setTitle("Ï†êÏàò");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
@@ -90,7 +92,9 @@ public class GamePanel extends JPanel implements Runnable{
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
+
 			nextBlocks[i].setBlockColor(Color.yellow);
+
 			nextPanel.add(nextBlocks[i]);
 		}
 		
@@ -111,9 +115,9 @@ public class GamePanel extends JPanel implements Runnable{
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
-		page.fillRoundRect(28, 95, 222, 405, 20,20); //∞‘¿”∫∏µÂ
-		page.fillRoundRect(270,160,130,340, 20,20); //≥ÿΩ∫∆Æ ∆–≥Œ
-		page.fillRoundRect(270,35,130,110, 20,20); //Ω∫ƒ⁄æÓ, Ω∫≈◊¿Ã¡ˆ
+		page.fillRoundRect(28, 95, 222, 405, 20,20); //Í≤åÏûÑÎ≥¥Îìú
+		page.fillRoundRect(270,160,130,340, 20,20); //ÎÑ•Ïä§Ìä∏ Ìå®ÎÑê
+		page.fillRoundRect(270,35,130,110, 20,20); //Ïä§ÏΩîÏñ¥, Ïä§ÌÖåÏù¥ÏßÄ
 		
 		page.setColor(Color.yellow);
 		
@@ -206,7 +210,11 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
+	
+		
+
 //		nextBlocks[3].setBlockColor(Color.ORANGE);
+
 		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
 	
