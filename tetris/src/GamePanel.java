@@ -15,14 +15,14 @@ public class GamePanel extends JPanel implements Runnable{
 	private int width, height;
 	private int rotation;
 	private int count1, count2;
-	private boolean gameOver;
+	private boolean gameOver, firstRun;
 	private int curX[], curY[];
 	private JPanel nextPanel;
-	private JButton btn;
-	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog;
+	private JButton btn, btnStart;
+	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog, lblFirst;
 	private JDialog JD;
 	private Thread TetrisThread;
-	ImageIcon background;
+	ImageIcon backgroundImg, firstImg, startImg, scoreImg, stageImg;
 	
 	public GamePanel() {
 		
@@ -42,17 +42,23 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		color = Color.ORANGE;
 		
+		firstRun = true;
+		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(680,600));
-		
-		
-		btn = new JButton("재시도");
-		btn.addActionListener(new BtnListener());
-		
-		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
+
+		//첫 이미지
+		firstImg = new ImageIcon("img/first.png");
+	    lblFirst = new JLabel(firstImg);
+	    lblFirst.setBounds(0,0,440,520);
+	    lblFirst.setVisible(firstRun);
+	    add(lblFirst);
+       
+		stageImg = new ImageIcon("img/stage.png");
+		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
         lblStage.setFont(new Font("arial",Font.BOLD,15));
         lblStage.setForeground(new Color(68, 68, 173));
-		lblStage.setBounds(270,55,130,15);
+		lblStage.setBounds(270,50,130,20);
 		add(lblStage);
 		
 		lblStageNum = new JLabel("1", SwingConstants.CENTER);
@@ -61,10 +67,11 @@ public class GamePanel extends JPanel implements Runnable{
         lblStageNum.setBounds(270,75,130,15);
 		add(lblStageNum);
 		
-		lblScore = new JLabel("SCORE",SwingConstants.CENTER);
+		scoreImg = new ImageIcon("img/score.png");
+		lblScore = new JLabel(scoreImg,SwingConstants.CENTER);
         lblScore.setFont(new Font("arial",Font.BOLD,15));
         lblScore.setForeground(new Color(68, 68, 173));
-        lblScore.setBounds(270,100,130,15);
+        lblScore.setBounds(270,95,130,20);
         add(lblScore);
         
 		lblScoreNum = new JLabel(Integer.toString(score*100), SwingConstants.CENTER);
@@ -74,6 +81,20 @@ public class GamePanel extends JPanel implements Runnable{
 		add(lblScoreNum);
 		
         lblDialog = new JLabel();
+  
+        startImg = new ImageIcon("img/start.png");
+        btnStart = new JButton("");
+        btnStart.setIcon(startImg);
+        btnStart.setBounds(140, 300, 160, 50);
+        btnStart.setBackground(new Color(0,0,0,0));
+        btnStart.setForeground(new Color(0,0,0,0));
+        btnStart.setVisible(firstRun);
+        btnStart.setBorderPainted(false);
+        btnStart.addActionListener(new BtnListener());
+        lblFirst.add(btnStart);
+       
+    	btn = new JButton("재도전");
+		btn.addActionListener(new BtnListener());
         
         JD = new JDialog();
 		JD.setTitle("�젏�닔");
@@ -98,7 +119,8 @@ public class GamePanel extends JPanel implements Runnable{
 			nextPanel.add(nextBlocks[i]);
 		}
 		
-		background = new ImageIcon("img/background.png");
+		backgroundImg = new ImageIcon("img/background.png");
+	
 		
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
@@ -111,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.requestFocus(true);
 		this.setBackground(new Color(15,24,55));
 		
-		page.drawImage(background.getImage(), 0, 0, null);
+		page.drawImage(backgroundImg.getImage(), 0, 0, null);
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
@@ -348,9 +370,9 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void start() {
-		if (TetrisThread == null)
+		if ( TetrisThread == null)
 			TetrisThread = new Thread(this);
-		TetrisThread.start();
+			TetrisThread.start();
 	}
 	
 	public void run() {
@@ -388,11 +410,26 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			Object obj = e.getSource();
+			
 			gameOver = false;
 			for (int y = 0; y < 20; y++)
 				for (int x = 1; x < 11; x++)
 					TetrisModel.GAMEBOARD[y][x] = 0;
 			score = 0; width = 100; height = 0;
+			
+			
+			if(obj == btnStart) {
+				
+				firstRun = false;
+				lblFirst.setVisible(firstRun);
+			}
 		}
+		
 	}
+
+	
 }
+
+
