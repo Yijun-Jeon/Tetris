@@ -1,6 +1,6 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.JPanel;
 
 public class MyTetrisPanel extends JPanel {
 	
@@ -14,10 +14,6 @@ public class MyTetrisPanel extends JPanel {
 		gamePanel = new GamePanel();
 		gamePanel.setBounds(0,0,440,520);
 		gamePanel.setBackground(Color.white);
-		add(gamePanel);
-	
-	
-            
+		add(gamePanel);     
 	}
-	
 }
