@@ -51,8 +51,8 @@ public class BlockPanel extends JPanel {
 					buffg.fill3DRect(j * TetrisModel.BLOCKSIZE, i * TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
 				}
 				else {
-					buffg.setColor(Color.white);
-					buffg.fillRect(j * TetrisModel.BLOCKSIZE, i * TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE);
+					buffg.setColor(new Color(255, 0, 0, 0));
+					buffg.fill3DRect(j * TetrisModel.BLOCKSIZE, i * TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
 				}
 		
 		g.drawImage(buffImage, 0, 0, this);
