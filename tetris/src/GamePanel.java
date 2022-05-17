@@ -47,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(680,600));
 		
+<<<<<<< HEAD
 		//첫 이미지
 		firstImg = new ImageIcon("img/first.png");
 	    lblFirst = new JLabel(firstImg);
@@ -56,6 +57,13 @@ public class GamePanel extends JPanel implements Runnable{
        
 		stageImg = new ImageIcon("img/stage.png");
 		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
+=======
+		
+		btn = new JButton("재시도");
+		btn.addActionListener(new BtnListener());
+		
+		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
+>>>>>>> refs/heads/master
         lblStage.setFont(new Font("arial",Font.BOLD,15));
         lblStage.setForeground(new Color(68, 68, 173));
 		lblStage.setBounds(270,50,130,20);
@@ -97,7 +105,7 @@ public class GamePanel extends JPanel implements Runnable{
 		btn.addActionListener(new BtnListener());
         
         JD = new JDialog();
-		JD.setTitle("점수");
+		JD.setTitle("�젏�닔");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
@@ -137,9 +145,9 @@ public class GamePanel extends JPanel implements Runnable{
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
-		page.fillRoundRect(28, 95, 222, 405, 20,20); //게임보드
-		page.fillRoundRect(270,160,130,340, 20,20); //넥스트 패널
-		page.fillRoundRect(270,35,130,110, 20,20); //스코어, 스테이지
+		page.fillRoundRect(28, 95, 222, 405, 20,20); //寃뚯엫蹂대뱶
+		page.fillRoundRect(270,160,130,340, 20,20); //�꽖�뒪�듃 �뙣�꼸
+		page.fillRoundRect(270,35,130,110, 20,20); //�뒪肄붿뼱, �뒪�뀒�씠吏�
 		
 		page.setColor(Color.yellow);
 		
