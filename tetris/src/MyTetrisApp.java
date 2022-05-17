@@ -1,4 +1,4 @@
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class MyTetrisApp {
 
@@ -13,5 +13,5 @@ public class MyTetrisApp {
 		
 		frame.pack();
 		frame.setVisible(true);
-	} //main
-} //MyTetrisApp
+	}
+}

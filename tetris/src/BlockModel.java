@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Dimension;
 
 public class BlockModel{
 
