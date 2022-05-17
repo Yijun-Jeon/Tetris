@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog, lblFirst;
 	private JDialog JD;
 	private Thread TetrisThread;
-	ImageIcon background, first, start;
+	ImageIcon backgroundImg, firstImg, startImg, scoreImg, stageImg;
 	
 	public GamePanel() {
 		
@@ -48,17 +48,17 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setPreferredSize(new Dimension(680,600));
 		
 		//첫 이미지
-		first = new ImageIcon("img/first.png");
-	    lblFirst = new JLabel(first);
+		firstImg = new ImageIcon("img/first.png");
+	    lblFirst = new JLabel(firstImg);
 	    lblFirst.setBounds(0,0,440,520);
 	    lblFirst.setVisible(firstRun);
 	    add(lblFirst);
        
-		
-		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
+		stageImg = new ImageIcon("img/stage.png");
+		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
         lblStage.setFont(new Font("arial",Font.BOLD,15));
         lblStage.setForeground(new Color(68, 68, 173));
-		lblStage.setBounds(270,55,130,15);
+		lblStage.setBounds(270,50,130,20);
 		add(lblStage);
 		
 		lblStageNum = new JLabel("1", SwingConstants.CENTER);
@@ -67,10 +67,11 @@ public class GamePanel extends JPanel implements Runnable{
         lblStageNum.setBounds(270,75,130,15);
 		add(lblStageNum);
 		
-		lblScore = new JLabel("SCORE",SwingConstants.CENTER);
+		scoreImg = new ImageIcon("img/score.png");
+		lblScore = new JLabel(scoreImg,SwingConstants.CENTER);
         lblScore.setFont(new Font("arial",Font.BOLD,15));
         lblScore.setForeground(new Color(68, 68, 173));
-        lblScore.setBounds(270,100,130,15);
+        lblScore.setBounds(270,95,130,20);
         add(lblScore);
         
 		lblScoreNum = new JLabel(Integer.toString(score*100), SwingConstants.CENTER);
@@ -80,10 +81,10 @@ public class GamePanel extends JPanel implements Runnable{
 		add(lblScoreNum);
 		
         lblDialog = new JLabel();
-        
-//        start = new ImageIcon("img/start.png");
+  
+        startImg = new ImageIcon("img/start.png");
         btnStart = new JButton("");
-//        btnStart.setIcon(start);
+        btnStart.setIcon(startImg);
         btnStart.setBounds(140, 300, 160, 50);
         btnStart.setBackground(new Color(0,0,0,0));
         btnStart.setForeground(new Color(0,0,0,0));
@@ -118,7 +119,7 @@ public class GamePanel extends JPanel implements Runnable{
 			nextPanel.add(nextBlocks[i]);
 		}
 		
-		background = new ImageIcon("img/background.png");
+		backgroundImg = new ImageIcon("img/background.png");
 	
 		
 		this.addKeyListener(new KeyBoardListener());
@@ -132,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.requestFocus(true);
 		this.setBackground(new Color(15,24,55));
 		
-		page.drawImage(background.getImage(), 0, 0, null);
+		page.drawImage(backgroundImg.getImage(), 0, 0, null);
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
