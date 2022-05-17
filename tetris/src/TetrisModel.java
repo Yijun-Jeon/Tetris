@@ -71,7 +71,13 @@ public class TetrisModel {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 	
 	public static final Color[] COLOR = {
-		Color.red, Color.blue, Color.yellow, Color.orange, Color.cyan, Color.magenta, Color.green,
+		new Color(252, 82, 48),  //red
+		new Color(253, 159, 40), //orange
+		new Color(255, 205, 74), //yellow
+		new Color(125, 178, 73), //green
+		new Color(24, 168, 241), //blue
+		new Color(154, 48, 174), //magenta
+		new Color(63, 204, 195), //cyan
 		
 	};
 }
