@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private int width, height, weight, temp;
 	private int rotation;
 	private int count1, count2, count3;
-	private boolean gameOver, firstRun;
+	private boolean gameOver, firstRun, bTeleport;
 	private int curX[], curY[], silhouetteX[], silhouetteY[], tempY[];
 	private JPanel nextPanel;
 	private JButton btn, btnStart;
@@ -44,8 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
 		silhouetteX = new int [4];
 		silhouetteY = new int [4];
 		tempY = new int [4];
-		
-		color = Color.ORANGE;
+		bTeleport = false;
 		
 		firstRun = true;
 		
@@ -111,22 +110,18 @@ public class GamePanel extends JPanel implements Runnable{
 		nextPanel = new JPanel();
 		nextPanel.setBounds(270,160,140,340);
 		nextPanel.setBackground(new Color(236, 236, 237, 0));
-//		nextPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(new Color(56,111,231)), "NEXT"));
 		this.add(nextPanel);
 		
 		nextBlocks = new BlockPanel[4];
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-
-			nextBlocks[i].setBlockColor(Color.yellow);
-
-			nextPanel.add(nextBlocks[i]);
+			nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
+			color = nextBlocks[i].getBlockColor();
 		}
 		
 		backgroundImg = new ImageIcon("./img/background.png");
-	
-		
+			
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
 		this.requestFocus(true);
@@ -142,14 +137,14 @@ public class GamePanel extends JPanel implements Runnable{
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
-		page.fillRoundRect(28, 95, 222, 405, 20,20); //
-		page.fillRoundRect(270,160,130,340, 20,20); //
-		page.fillRoundRect(270,35,130,110, 20,20); //
+		page.fillRoundRect(28, 95, 222, 405, 20,20); // 
+		page.fillRoundRect(270,160,130,340, 20,20); // 
+		page.fillRoundRect(270,35,130,110, 20,20); // 
 		
-		page.setColor(Color.yellow);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
+		drawNextBlocks(page);
 		gameOverCheck();
 		removeLine(count1, count2, count3, page);
 		blockToWall();
@@ -158,6 +153,19 @@ public class GamePanel extends JPanel implements Runnable{
 		if (end == 1) {
 			blockToNext();
 			end = 0;
+		}
+	}
+	
+	public void drawNextBlocks(Graphics g) {
+		for(int i=0;i<4;i++) {
+			for (int y = 0; y < 4; y++)
+				for (int x = 0; x < 4; x++)
+					if (TetrisModel.BLOCKS[nextBlocks[i].getBlockNum()][0][y][x] == 1) {
+						g.setColor(nextBlocks[i].getBlockColor());
+						g.fill3DRect(x * TetrisModel.BLOCKSIZE + 300,
+								y * TetrisModel.BLOCKSIZE + 170 + i*80,
+								TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
+					}
 		}
 	}
 		
@@ -200,6 +208,7 @@ public class GamePanel extends JPanel implements Runnable{
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					curX[count1] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					curY[count1] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					g.setColor(color);
 					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 					count1++;
 				}
@@ -254,6 +263,7 @@ public class GamePanel extends JPanel implements Runnable{
 						temp = 0;
 						end = 1;
 						rotation = 0;
+						bTeleport = false;
 					}
 				}
 			}
@@ -268,12 +278,7 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
-	
-		
-
-//		nextBlocks[3].setBlockColor(Color.ORANGE);
-
-		for(BlockPanel blockP : nextBlocks) blockP.repaint();
+		nextBlocks[3].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]);
 	}
 	
 	public void rotationCheck() {
@@ -405,7 +410,10 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void down() {
-		height += TetrisModel.BLOCKSIZE;
+		if (!bTeleport)
+			height += TetrisModel.BLOCKSIZE;
+		else
+			height += (weight-20);
 		repaint();
 	}
 	
@@ -441,6 +449,8 @@ public class GamePanel extends JPanel implements Runnable{
 				moveLeft();
 			if (keyCode == KeyEvent.VK_RIGHT)
 				moveRight();
+			if (keyCode == KeyEvent.VK_SPACE)
+				bTeleport = true;
 		}
 		public void keyTyped(KeyEvent e) {}
 		public void keyReleased(KeyEvent e) {}	
