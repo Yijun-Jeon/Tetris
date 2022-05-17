@@ -1,7 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,17 +9,16 @@ public class GamePanel extends JPanel implements Runnable{
 	private Color color;
 	private BlockPanel[] nextBlocks;
 	private int score;
-	private int width, height;
+	private int width, height, weight, temp;
 	private int rotation;
-	private int count1, count2;
+	private int count1, count2, count3;
 	private boolean gameOver;
-	private int curX[], curY[];
+	private int curX[], curY[], silhouetteX[], silhouetteY[], tempY[];
 	private JPanel nextPanel;
 	private JButton btn;
 	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog;
 	private JDialog JD;
 	private Thread TetrisThread;
-	ImageIcon background;
 	
 	public GamePanel() {
 		
@@ -32,73 +28,67 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		width = 100;
 		height = 0;
+		weight = 340;
+		temp = 0;
 		rotation = 0;
 		
-		count1 = 0; count2 = 0;
+		count1 = 0; count2 = 0; count3 = 0;
 		gameOver = false;
 		
 		curX = new int [4];
 		curY = new int [4];
-		
-		color = Color.ORANGE;
+		silhouetteX = new int [4];
+		silhouetteY = new int [4];
+		tempY = new int [4];
 		
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(680,600));
+		this.setPreferredSize(new Dimension(720,600));
 		
-		
-		btn = new JButton("Ïû¨ÏãúÎèÑ");
+		btn = new JButton("¿Áµµ¿¸");
 		btn.addActionListener(new BtnListener());
 		
 		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
-        lblStage.setFont(new Font("arial",Font.BOLD,15));
-        lblStage.setForeground(new Color(68, 68, 173));
-		lblStage.setBounds(270,55,130,15);
+        lblStage.setFont(new Font("arial",Font.BOLD,13));
+		lblStage.setBounds(310,30,160,15);
 		add(lblStage);
 		
 		lblStageNum = new JLabel("1", SwingConstants.CENTER);
-        lblStageNum.setFont(new Font("arial",Font.BOLD,13));
-        lblStageNum.setForeground(Color.white);
-        lblStageNum.setBounds(270,75,130,15);
+        lblStageNum.setFont(new Font("arial",Font.PLAIN,13));
+        lblStageNum.setBounds(310,50,160,15);
 		add(lblStageNum);
 		
 		lblScore = new JLabel("SCORE",SwingConstants.CENTER);
-        lblScore.setFont(new Font("arial",Font.BOLD,15));
-        lblScore.setForeground(new Color(68, 68, 173));
-        lblScore.setBounds(270,100,130,15);
+        lblScore.setFont(new Font("arial",Font.BOLD,13));
+        lblScore.setBounds(310,80,160,15);
         add(lblScore);
         
 		lblScoreNum = new JLabel(Integer.toString(score*100), SwingConstants.CENTER);
-		lblScoreNum.setFont(new Font("arial",Font.BOLD,13));
-		lblScoreNum.setForeground(Color.white);
-		lblScoreNum.setBounds(270, 120, 130, 15);
+		lblScoreNum.setFont(new Font("arial",Font.PLAIN,13));
+		lblScoreNum.setBounds(310, 100, 160, 15);
 		add(lblScoreNum);
-		
+	
         lblDialog = new JLabel();
         
         JD = new JDialog();
-		JD.setTitle("ÔøΩÏ†èÔøΩÎãî");
+		JD.setTitle("¡°ºˆ");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
 		JD.add(lblDialog);
 		
 		nextPanel = new JPanel();
-		nextPanel.setBounds(270,160,140,340);
-		nextPanel.setBackground(new Color(236, 236, 237, 0));
-//		nextPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(new Color(56,111,231)), "NEXT"));
+		nextPanel.setBounds(310,120,160,380);
+		nextPanel.setBackground(Color.white);
+		nextPanel.setBorder(BorderFactory.createTitledBorder("NEXT"));
 		this.add(nextPanel);
 		
 		nextBlocks = new BlockPanel[4];
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-
-			nextBlocks[i].setBlockColor(Color.yellow);
-
+			nextBlocks[i].setBlockColor(Color.BLUE);
 			nextPanel.add(nextBlocks[i]);
 		}
-		
-		background = new ImageIcon("img/background.png");
 		
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
@@ -109,22 +99,20 @@ public class GamePanel extends JPanel implements Runnable{
 	public void paintComponent(Graphics page) {
 		super.paintComponent(page);
 		this.requestFocus(true);
-		this.setBackground(new Color(15,24,55));
+		this.setBackground(Color.white);
 		
-		page.drawImage(background.getImage(), 0, 0, null);
-		setOpaque(false);
-	
-		page.setColor(new Color(236, 236, 237, 127));
-		page.fillRoundRect(28, 95, 222, 405, 20,20); //ÂØÉÎöØÏó´ËπÇÎåÄÎ±∂
-		page.fillRoundRect(270,160,130,340, 20,20); //ÔøΩÍΩñÔøΩÎí™ÔøΩÎìÉ ÔøΩÎô£ÔøΩÍº∏
-		page.fillRoundRect(270,35,130,110, 20,20); //ÔøΩÎí™ËÇÑÎ∂øÎº±, ÔøΩÎí™ÔøΩÎÄíÔøΩÏî†ÔßûÔøΩ
+		page.setColor(Color.GRAY);
+		page.draw3DRect(28, 70, 5, 395, true); //±‚µ’
+		page.draw3DRect(245, 70, 5, 395, true);
+		page.draw3DRect(15, 465, 248, 5, true);//πŸ¥⁄
+		page.draw3DRect(15, 65, 248, 5, true);//√µ¿Â
 		
-		page.setColor(Color.yellow);
+		page.setColor(color);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
 		gameOverCheck();
-		removeLine(count1, count2, page);
+		removeLine(count1, count2, count3, page);
 		blockToWall();
 		makeWall(page);
 		
@@ -145,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	public void removeLine(int count1, int count2, Graphics g) {
+	public void removeLine(int count1, int count2, int count3, Graphics g) {
 		for (int y = 0; y < 20; y++) {
 			for (int x = 1; x < 11 ; x++)
 				if (TetrisModel.GAMEBOARD[y][x] == 1)
@@ -159,8 +147,12 @@ public class GamePanel extends JPanel implements Runnable{
 				}
 				score++;
 			}
-			else
+			else {
+				g.setColor(Color.blue);
 				blockDown(count1, g);
+				g.setColor(Color.pink);
+				makeSilhouette(count3, g);
+			}
 			count2 = 0;
 		}
 	}
@@ -171,10 +163,37 @@ public class GamePanel extends JPanel implements Runnable{
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					curX[count1] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					curY[count1] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
-					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+60, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 					count1++;
 				}
 			}
+		}
+	}
+	
+	public void makeSilhouette(int count3, Graphics g) {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
+					silhouetteX[count3] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
+					silhouetteY[count3] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					tempY[count3] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					temp = 0;
+					while (true) {
+						if (TetrisModel.GAMEBOARD[tempY[count3]][silhouetteX[count3]] == 0) {
+							temp += 20;
+							tempY[count3] = (i*TetrisModel.BLOCKSIZE+height+temp)/TetrisModel.BLOCKSIZE;
+						}
+						else
+							break;
+					}
+					if (weight >= temp)
+						weight = temp;
+					count3++;
+				}
+			}
+		}
+		for (int i = 0; i < 4; i++) {
+			g.fill3DRect(silhouetteX[i]*TetrisModel.BLOCKSIZE+20, (silhouetteY[i]+weight/20)*TetrisModel.BLOCKSIZE+40, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 		}
 	}
 	
@@ -183,7 +202,7 @@ public class GamePanel extends JPanel implements Runnable{
 		for (int y = 0; y < 20; y++)
 			for (int x = 1; x < 11; x++)
 				if (TetrisModel.GAMEBOARD[y][x] == 1)
-					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+60, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 	}
 	
 	public void blockToWall() {
@@ -194,6 +213,8 @@ public class GamePanel extends JPanel implements Runnable{
 						TetrisModel.GAMEBOARD[curY[j]][curX[j]] = 1;
 						width = 100;
 						height = 0;
+						weight = 340;
+						temp = 0;
 						end = 1;
 						rotation = 0;
 					}
@@ -210,11 +231,7 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
-	
-		
-
-//		nextBlocks[3].setBlockColor(Color.ORANGE);
-
+		//nextBlocks[3].setBlockColor(Color.ORANGE);
 		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
 	
@@ -319,6 +336,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private void rotateBlock() {
 		rotationCheck();
 		if(gameOver == false)
+			weight = 340;
 			this.repaint();
 	}
 	private void moveDown() {
@@ -331,6 +349,7 @@ public class GamePanel extends JPanel implements Runnable{
 		boolean collision = collisionLeft();
 		if (collision == false && gameOver == false) {
 			width -= TetrisModel.BLOCKSIZE;
+			weight = 340;
 			this.repaint();
 		}
 	}
@@ -338,6 +357,7 @@ public class GamePanel extends JPanel implements Runnable{
 		boolean collision = collisionRight();
 		if (collision == false && gameOver == false) {
 			width += TetrisModel.BLOCKSIZE;
+			weight = 340;
 			this.repaint();
 		}
 	}
@@ -364,7 +384,6 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 	}
-	
 	
 	private class KeyBoardListener implements KeyListener {
 

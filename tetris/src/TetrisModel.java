@@ -1,4 +1,3 @@
-import java.awt.Color;
 
 public class TetrisModel {
 
@@ -70,8 +69,4 @@ public class TetrisModel {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 	
-	public static final Color[] COLOR = {
-		Color.red, Color.blue, Color.yellow, Color.orange, Color.cyan, Color.magenta, Color.green,
-		
-	};
 }
