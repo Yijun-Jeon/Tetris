@@ -1,17 +1,17 @@
 import java.awt.Color;
 import java.awt.Dimension;
 
-public class BlockPanel{
+public class BlockModel{
 
 	private int blockNum;
 	private Color blockColor;
 
-	BlockPanel() {
+	BlockModel() {
 		blockNum = 0;
 		blockColor = TetrisModel.COLOR[(int)(Math.random()*7)];
 	}
 
-	BlockPanel(int n, Color color) {
+	BlockModel(int n, Color color) {
 		blockNum = n;
 		blockColor = color;
 	}

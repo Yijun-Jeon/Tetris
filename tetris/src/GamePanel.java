@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private int end;
 	private int nBlock;
 	private Color color;
-	private BlockPanel[] nextBlocks;
+	private BlockModel[] nextBlocks;
 	private int score;
 	private int width, height, weight, temp;
 	private int rotation;
@@ -117,9 +117,9 @@ public class GamePanel extends JPanel implements Runnable{
 		nextPanel.setBackground(new Color(236, 236, 237, 0));
 		this.add(nextPanel);
 		
-		nextBlocks = new BlockPanel[4];
+		nextBlocks = new BlockModel[4];
 		for(int i=0;i<4;i++) {
-			nextBlocks[i] = new BlockPanel();
+			nextBlocks[i] = new BlockModel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
 			nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
 			color = nextBlocks[i].getBlockColor();
