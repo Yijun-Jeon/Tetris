@@ -1,8 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.JPanel;
 
-public class BlockPanel extends JPanel {
+public class BlockPanel{
 
 	private int blockNum;
 	private Color blockColor;
@@ -10,13 +9,11 @@ public class BlockPanel extends JPanel {
 	BlockPanel() {
 		blockNum = 0;
 		blockColor = TetrisModel.COLOR[(int)(Math.random()*7)];
-		setPreferredSize(new Dimension(80, 80));
 	}
 
 	BlockPanel(int n, Color color) {
 		blockNum = n;
 		blockColor = color;
-		setPreferredSize(new Dimension(80, 80));
 	}
 
 	public int getBlockNum() {
