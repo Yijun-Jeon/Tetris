@@ -1,16 +1,11 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-
 import javax.swing.JPanel;
 
 public class BlockPanel extends JPanel {
 
 	private int blockNum;
 	private Color blockColor;
-	private Image buffImage;
-	private Graphics buffg;
 
 	BlockPanel() {
 		blockNum = 0;
@@ -39,28 +34,4 @@ public class BlockPanel extends JPanel {
 	public void setBlockColor(Color color) {
 		blockColor = color;
 	}
-
-	@Override
-	public void paint(Graphics g) {
-		buffImage = createImage(80,80);
-		buffg = buffImage.getGraphics();
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				if (TetrisModel.BLOCKS[blockNum][0][i][j] == 1) {
-					buffg.setColor(blockColor);
-					buffg.fill3DRect(j * TetrisModel.BLOCKSIZE, i * TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
-				}
-				else {
-					buffg.setColor(new Color(0,0,0,0));
-					buffg.fill3DRect(j * TetrisModel.BLOCKSIZE, i * TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
-				}
-		
-		g.drawImage(buffImage, 0, 0, this);
-	}
-	
-	@Override
-	public void update(Graphics g) {
-		paint(g);
-	}
-	 
 }
