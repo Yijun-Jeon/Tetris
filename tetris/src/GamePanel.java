@@ -48,13 +48,13 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setPreferredSize(new Dimension(680,600));
 
 		//첫 이미지
-		firstImg = new ImageIcon("img/first.png");
+		firstImg = new ImageIcon("./img/first.png");
 	    lblFirst = new JLabel(firstImg);
 	    lblFirst.setBounds(0,0,440,520);
 	    lblFirst.setVisible(firstRun);
 	    add(lblFirst);
        
-		stageImg = new ImageIcon("img/stage.png");
+		stageImg = new ImageIcon("./img/stage.png");
 		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
         lblStage.setFont(new Font("arial",Font.BOLD,15));
         lblStage.setForeground(new Color(68, 68, 173));
@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable{
         lblStageNum.setBounds(270,75,130,15);
 		add(lblStageNum);
 		
-		scoreImg = new ImageIcon("img/score.png");
+		scoreImg = new ImageIcon("./img/score.png");
 		lblScore = new JLabel(scoreImg,SwingConstants.CENTER);
         lblScore.setFont(new Font("arial",Font.BOLD,15));
         lblScore.setForeground(new Color(68, 68, 173));
@@ -82,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
         lblDialog = new JLabel();
   
-        startImg = new ImageIcon("img/start.png");
+        startImg = new ImageIcon("./img/start.png");
         btnStart = new JButton("");
         btnStart.setIcon(startImg);
         btnStart.setBounds(140, 300, 160, 50);
@@ -119,7 +119,7 @@ public class GamePanel extends JPanel implements Runnable{
 			nextPanel.add(nextBlocks[i]);
 		}
 		
-		backgroundImg = new ImageIcon("img/background.png");
+		backgroundImg = new ImageIcon("./img/background.png");
 	
 		
 		this.addKeyListener(new KeyBoardListener());
