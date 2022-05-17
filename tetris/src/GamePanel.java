@@ -1,9 +1,14 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -122,6 +127,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		backgroundImg = new ImageIcon("./img/background.png");
 			
+		sound("sound/bgm.wav");
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
 		this.requestFocus(true);
@@ -433,6 +439,21 @@ public class GamePanel extends JPanel implements Runnable{
 				return;
 			}
 		}
+	}
+	
+	public static void sound(String file) {
+		try {
+			AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			Clip clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
