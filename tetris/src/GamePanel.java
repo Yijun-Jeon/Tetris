@@ -145,7 +145,9 @@ public class GamePanel extends JPanel implements Runnable{
 		page.setColor(new Color(236, 236, 237, 127));
 		page.fillRoundRect(28, 95, 222, 405, 20,20); 
 		page.fillRoundRect(270,160,130,340, 20,20); 
-		page.fillRoundRect(270,35,130,110, 20,20); 
+		page.fillRoundRect(270,35,130,110, 20,20);
+		page.setColor(new Color(236, 236, 237, 255));
+		page.drawLine(28, 150, 250, 150);
 		
 		
 		lblScoreNum.setText(Integer.toString(score*100));
@@ -177,7 +179,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 	public void gameOverCheck() {
 		for (int i = 1; i < 11; i++) {
-			if (TetrisModel.GAMEBOARD[2][i] == 1) {
+			if (TetrisModel.GAMEBOARD[3][i] == 1) {
 				gameOver = true;
 				lblDialog.setText(lblScoreNum.getText());
 				JD.setVisible(true);
@@ -191,8 +193,8 @@ public class GamePanel extends JPanel implements Runnable{
 				if (TetrisModel.GAMEBOARD[y][x] == 1)
 					lineCount++;
 			if (lineCount == 10) {
-				for (int i=y; i>1; i--) {
-					for (int j=1; j<11; j++) {
+				for (int i = y; i > 1; i--) {
+					for (int j = 1; j < 11; j++) {
 						TetrisModel.GAMEBOARD[i][j] = 0;
 						TetrisModel.GAMEBOARD[i][j] = TetrisModel.GAMEBOARD[i-1][j];
 					}
