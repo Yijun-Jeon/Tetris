@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(720,600));
 		
-		btn = new JButton("ÀçµµÀü");
+		btn = new JButton("ï¿½çµµï¿½ï¿½");
 		btn.addActionListener(new BtnListener());
 		
 		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
@@ -70,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable{
         lblDialog = new JLabel();
         
         JD = new JDialog();
-		JD.setTitle("Á¡¼ö");
+		JD.setTitle("ï¿½ï¿½ï¿½");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
@@ -86,8 +86,9 @@ public class GamePanel extends JPanel implements Runnable{
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-			nextBlocks[i].setBlockColor(Color.BLUE);
-			nextPanel.add(nextBlocks[i]);
+
+			nextBlocks[i].setBlockColor(Color.yellow);
+
 		}
 		
 		this.addKeyListener(new KeyBoardListener());
@@ -102,15 +103,16 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setBackground(Color.white);
 		
 		page.setColor(Color.GRAY);
-		page.draw3DRect(28, 70, 5, 395, true); //±âµÕ
+		page.draw3DRect(28, 70, 5, 395, true); //ï¿½ï¿½ï¿½
 		page.draw3DRect(245, 70, 5, 395, true);
-		page.draw3DRect(15, 465, 248, 5, true);//¹Ù´Ú
-		page.draw3DRect(15, 65, 248, 5, true);//ÃµÀå
+		page.draw3DRect(15, 465, 248, 5, true);//ï¿½Ù´ï¿½
+		page.draw3DRect(15, 65, 248, 5, true);//Ãµï¿½ï¿½
 		
 		page.setColor(color);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
+		drawNextBlocks(page);
 		gameOverCheck();
 		removeLine(count1, count2, count3, page);
 		blockToWall();
@@ -119,6 +121,19 @@ public class GamePanel extends JPanel implements Runnable{
 		if (end == 1) {
 			blockToNext();
 			end = 0;
+		}
+	}
+	
+	public void drawNextBlocks(Graphics g) {
+		for(int i=0;i<4;i++) {
+			for (int y = 0; y < 4; y++)
+				for (int x = 0; x < 4; x++)
+					if (TetrisModel.BLOCKS[nextBlocks[i].getBlockNum()][0][y][x] == 1) {
+						g.setColor(nextBlocks[i].getBlockColor());
+						g.fill3DRect(x * TetrisModel.BLOCKSIZE + 300,
+								y * TetrisModel.BLOCKSIZE + 170 + i*80,
+								TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
+					}
 		}
 	}
 		
@@ -231,8 +246,9 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
-		//nextBlocks[3].setBlockColor(Color.ORANGE);
-		for(BlockPanel blockP : nextBlocks) blockP.repaint();
+
+//		nextBlocks[3].setBlockColor(Color.ORANGE);
+
 	}
 	
 	public void rotationCheck() {
