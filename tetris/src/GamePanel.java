@@ -44,10 +44,9 @@ public class GamePanel extends JPanel implements Runnable{
 		silhouetteX = new int [4];
 		silhouetteY = new int [4];
 		tempY = new int [4];
+	
 		
-		color = Color.ORANGE;
-		
-		firstRun = true;
+		firstRun = false;
 		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(680,600));
@@ -98,11 +97,11 @@ public class GamePanel extends JPanel implements Runnable{
         btnStart.addActionListener(new BtnListener());
         lblFirst.add(btnStart);
        
-    	btn = new JButton("ÀçµµÀü");
+    	btn = new JButton("재도전");
 		btn.addActionListener(new BtnListener());
         
         JD = new JDialog();
-		JD.setTitle("Á¡¼ö");
+		JD.setTitle("점수");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
@@ -111,18 +110,18 @@ public class GamePanel extends JPanel implements Runnable{
 		nextPanel = new JPanel();
 		nextPanel.setBounds(270,160,140,340);
 		nextPanel.setBackground(new Color(236, 236, 237, 0));
-//		nextPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(new Color(56,111,231)), "NEXT"));
 		this.add(nextPanel);
 		
 		nextBlocks = new BlockPanel[4];
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-
-			nextBlocks[i].setBlockColor(Color.yellow);
-
+			nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //넥스트 컬러
+			color = nextBlocks[i].getBlockColor();
+					
 			nextPanel.add(nextBlocks[i]);
 		}
+	
 		
 		backgroundImg = new ImageIcon("./img/background.png");
 	
@@ -142,11 +141,10 @@ public class GamePanel extends JPanel implements Runnable{
 		setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
-		page.fillRoundRect(28, 95, 222, 405, 20,20); //
-		page.fillRoundRect(270,160,130,340, 20,20); //
-		page.fillRoundRect(270,35,130,110, 20,20); //
+		page.fillRoundRect(28, 95, 222, 405, 20,20); // 게임보드
+		page.fillRoundRect(270,160,130,340, 20,20); // 블록패널
+		page.fillRoundRect(270,35,130,110, 20,20); // 스코어, 스테이지
 		
-		page.setColor(Color.yellow);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
@@ -200,6 +198,7 @@ public class GamePanel extends JPanel implements Runnable{
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					curX[count1] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					curY[count1] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					g.setColor(color);
 					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 					count1++;
 				}
@@ -268,10 +267,8 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
+		nextBlocks[3].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]);
 	
-		
-
-//		nextBlocks[3].setBlockColor(Color.ORANGE);
 
 		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
