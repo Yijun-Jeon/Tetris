@@ -1,1 +1,7 @@
-/background.png
+/BlockPanel.class
+/GamePanel$BtnListener.class
+/GamePanel$KeyBoardListener.class
+/GamePanel.class
+/MyTetrisApp.class
+/MyTetrisPanel.class
+/TetrisModel.class

@@ -8,11 +8,12 @@ public class BlockPanel{
 	BlockPanel() {
 		blockNum = 0;
 		blockColor = Color.ORANGE;
-	}
 
-	BlockPanel(int n, Color color) {
+	}
+	BlockPanel(int n, Color color){
 		blockNum = n;
 		blockColor = color;
+
 	}
 
 	public int getBlockNum() {
@@ -30,4 +31,5 @@ public class BlockPanel{
 	public void setBlockColor(Color color) {
 		blockColor = color;
 	}	 
+
 }
