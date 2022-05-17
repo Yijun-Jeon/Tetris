@@ -1,9 +1,16 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -23,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private JDialog JD;
 	private Thread TetrisThread;
 	ImageIcon backgroundImg, firstImg, startImg, scoreImg, stageImg;
+	private Clip clip;
 	
 	public GamePanel() {
 		
@@ -121,7 +129,8 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 		backgroundImg = new ImageIcon("./img/background.png");
-			
+		
+		Main_Sound("sound/bgm.wav");
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
 		this.requestFocus(true);
@@ -431,6 +440,20 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
+	public static void Main_Sound(String file) {
+		try {
+			AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			Clip clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	private class KeyBoardListener implements KeyListener {
 
