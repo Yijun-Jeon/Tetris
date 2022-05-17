@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,13 +15,14 @@ public class GamePanel extends JPanel implements Runnable{
 	private int width, height, weight, temp;
 	private int rotation;
 	private int count1, count2, count3;
-	private boolean gameOver;
+	private boolean gameOver, firstRun;
 	private int curX[], curY[], silhouetteX[], silhouetteY[], tempY[];
 	private JPanel nextPanel;
-	private JButton btn;
-	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog;
+	private JButton btn, btnStart;
+	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog, lblFirst;
 	private JDialog JD;
 	private Thread TetrisThread;
+	ImageIcon backgroundImg, firstImg, startImg, scoreImg, stageImg;
 	
 	public GamePanel() {
 		
@@ -32,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable{
 		temp = 0;
 		rotation = 0;
 		
-		count1 = 0; count2 = 0; count3 = 0;
+		count1 = 0; count2 = 0;
 		gameOver = false;
 		
 		curX = new int [4];
@@ -41,45 +45,73 @@ public class GamePanel extends JPanel implements Runnable{
 		silhouetteY = new int [4];
 		tempY = new int [4];
 		
+		color = Color.ORANGE;
+		
+		firstRun = true;
+		
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(720,600));
-		
-		btn = new JButton("ï¿½çµµï¿½ï¿½");
-		btn.addActionListener(new BtnListener());
-		
-		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
-        lblStage.setFont(new Font("arial",Font.BOLD,13));
-		lblStage.setBounds(310,30,160,15);
+		this.setPreferredSize(new Dimension(680,600));
+
+		//
+		firstImg = new ImageIcon("./img/first.png");
+	    lblFirst = new JLabel(firstImg);
+	    lblFirst.setBounds(0,0,440,520);
+	    lblFirst.setVisible(firstRun);
+	    add(lblFirst);
+       
+		stageImg = new ImageIcon("./img/stage.png");
+		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
+        lblStage.setFont(new Font("arial",Font.BOLD,15));
+        lblStage.setForeground(new Color(68, 68, 173));
+		lblStage.setBounds(270,50,130,20);
 		add(lblStage);
 		
 		lblStageNum = new JLabel("1", SwingConstants.CENTER);
-        lblStageNum.setFont(new Font("arial",Font.PLAIN,13));
-        lblStageNum.setBounds(310,50,160,15);
+        lblStageNum.setFont(new Font("arial",Font.BOLD,13));
+        lblStageNum.setForeground(Color.white);
+        lblStageNum.setBounds(270,75,130,15);
 		add(lblStageNum);
 		
-		lblScore = new JLabel("SCORE",SwingConstants.CENTER);
-        lblScore.setFont(new Font("arial",Font.BOLD,13));
-        lblScore.setBounds(310,80,160,15);
+		scoreImg = new ImageIcon("./img/score.png");
+		lblScore = new JLabel(scoreImg,SwingConstants.CENTER);
+        lblScore.setFont(new Font("arial",Font.BOLD,15));
+        lblScore.setForeground(new Color(68, 68, 173));
+        lblScore.setBounds(270,95,130,20);
         add(lblScore);
         
 		lblScoreNum = new JLabel(Integer.toString(score*100), SwingConstants.CENTER);
-		lblScoreNum.setFont(new Font("arial",Font.PLAIN,13));
-		lblScoreNum.setBounds(310, 100, 160, 15);
+		lblScoreNum.setFont(new Font("arial",Font.BOLD,13));
+		lblScoreNum.setForeground(Color.white);
+		lblScoreNum.setBounds(270, 120, 130, 15);
 		add(lblScoreNum);
-	
+		
         lblDialog = new JLabel();
+  
+        startImg = new ImageIcon("./img/start.png");
+        btnStart = new JButton("");
+        btnStart.setIcon(startImg);
+        btnStart.setBounds(140, 300, 160, 50);
+        btnStart.setBackground(new Color(0,0,0,0));
+        btnStart.setForeground(new Color(0,0,0,0));
+        btnStart.setVisible(firstRun);
+        btnStart.setBorderPainted(false);
+        btnStart.addActionListener(new BtnListener());
+        lblFirst.add(btnStart);
+       
+    	btn = new JButton("ÀçµµÀü");
+		btn.addActionListener(new BtnListener());
         
         JD = new JDialog();
-		JD.setTitle("ï¿½ï¿½ï¿½");
+		JD.setTitle("Á¡¼ö");
 		JD.setSize(250,190);
 		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
 		JD.add(btn);
 		JD.add(lblDialog);
 		
 		nextPanel = new JPanel();
-		nextPanel.setBounds(310,120,160,380);
-		nextPanel.setBackground(Color.white);
-		nextPanel.setBorder(BorderFactory.createTitledBorder("NEXT"));
+		nextPanel.setBounds(270,160,140,340);
+		nextPanel.setBackground(new Color(236, 236, 237, 0));
+//		nextPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(new Color(56,111,231)), "NEXT"));
 		this.add(nextPanel);
 		
 		nextBlocks = new BlockPanel[4];
@@ -89,7 +121,11 @@ public class GamePanel extends JPanel implements Runnable{
 
 			nextBlocks[i].setBlockColor(Color.yellow);
 
+			nextPanel.add(nextBlocks[i]);
 		}
+		
+		backgroundImg = new ImageIcon("./img/background.png");
+	
 		
 		this.addKeyListener(new KeyBoardListener());
 		this.setFocusable(true);
@@ -100,19 +136,20 @@ public class GamePanel extends JPanel implements Runnable{
 	public void paintComponent(Graphics page) {
 		super.paintComponent(page);
 		this.requestFocus(true);
-		this.setBackground(Color.white);
+		this.setBackground(new Color(15,24,55));
 		
-		page.setColor(Color.GRAY);
-		page.draw3DRect(28, 70, 5, 395, true); //ï¿½ï¿½ï¿½
-		page.draw3DRect(245, 70, 5, 395, true);
-		page.draw3DRect(15, 465, 248, 5, true);//ï¿½Ù´ï¿½
-		page.draw3DRect(15, 65, 248, 5, true);//Ãµï¿½ï¿½
+		page.drawImage(backgroundImg.getImage(), 0, 0, null);
+		setOpaque(false);
+	
+		page.setColor(new Color(236, 236, 237, 127));
+		page.fillRoundRect(28, 95, 222, 405, 20,20); //
+		page.fillRoundRect(270,160,130,340, 20,20); //
+		page.fillRoundRect(270,35,130,110, 20,20); //
 		
-		page.setColor(color);
+		page.setColor(Color.yellow);
 		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
-		drawNextBlocks(page);
 		gameOverCheck();
 		removeLine(count1, count2, count3, page);
 		blockToWall();
@@ -121,19 +158,6 @@ public class GamePanel extends JPanel implements Runnable{
 		if (end == 1) {
 			blockToNext();
 			end = 0;
-		}
-	}
-	
-	public void drawNextBlocks(Graphics g) {
-		for(int i=0;i<4;i++) {
-			for (int y = 0; y < 4; y++)
-				for (int x = 0; x < 4; x++)
-					if (TetrisModel.BLOCKS[nextBlocks[i].getBlockNum()][0][y][x] == 1) {
-						g.setColor(nextBlocks[i].getBlockColor());
-						g.fill3DRect(x * TetrisModel.BLOCKSIZE + 300,
-								y * TetrisModel.BLOCKSIZE + 170 + i*80,
-								TetrisModel.BLOCKSIZE,TetrisModel.BLOCKSIZE, true);
-					}
 		}
 	}
 		
@@ -163,9 +187,7 @@ public class GamePanel extends JPanel implements Runnable{
 				score++;
 			}
 			else {
-				g.setColor(Color.blue);
 				blockDown(count1, g);
-				g.setColor(Color.pink);
 				makeSilhouette(count3, g);
 			}
 			count2 = 0;
@@ -178,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable{
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					curX[count1] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					curY[count1] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
-					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+60, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+					g.fill3DRect(curX[count1]*TetrisModel.BLOCKSIZE+20, curY[count1]*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 					count1++;
 				}
 			}
@@ -201,14 +223,14 @@ public class GamePanel extends JPanel implements Runnable{
 						else
 							break;
 					}
-					if (weight >= temp)
+					if (weight > temp)
 						weight = temp;
 					count3++;
 				}
 			}
 		}
 		for (int i = 0; i < 4; i++) {
-			g.fill3DRect(silhouetteX[i]*TetrisModel.BLOCKSIZE+20, (silhouetteY[i]+weight/20)*TetrisModel.BLOCKSIZE+40, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+			g.drawRect(silhouetteX[i]*TetrisModel.BLOCKSIZE+20, (silhouetteY[i]+weight/20)*TetrisModel.BLOCKSIZE+70, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE);
 		}
 	}
 	
@@ -217,7 +239,7 @@ public class GamePanel extends JPanel implements Runnable{
 		for (int y = 0; y < 20; y++)
 			for (int x = 1; x < 11; x++)
 				if (TetrisModel.GAMEBOARD[y][x] == 1)
-					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+60, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
 	}
 	
 	public void blockToWall() {
@@ -246,9 +268,12 @@ public class GamePanel extends JPanel implements Runnable{
 			nextBlocks[i].setBlockColor(nextBlocks[i+1].getBlockColor());
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
+	
+		
 
 //		nextBlocks[3].setBlockColor(Color.ORANGE);
 
+		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
 	
 	public void rotationCheck() {
@@ -351,9 +376,10 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	private void rotateBlock() {
 		rotationCheck();
-		if(gameOver == false)
+		if(gameOver == false) {
 			weight = 340;
 			this.repaint();
+		}
 	}
 	private void moveDown() {
 		if (gameOver == false) {
@@ -384,7 +410,7 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void start() {
-		if (TetrisThread == null)
+		if ( TetrisThread == null)
 			TetrisThread = new Thread(this);
 		TetrisThread.start();
 	}
@@ -400,6 +426,7 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 	}
+	
 	
 	private class KeyBoardListener implements KeyListener {
 
@@ -423,11 +450,24 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			Object obj = e.getSource();
+			
 			gameOver = false;
 			for (int y = 0; y < 20; y++)
 				for (int x = 1; x < 11; x++)
 					TetrisModel.GAMEBOARD[y][x] = 0;
 			score = 0; width = 100; height = 0;
+			
+			
+			if(obj == btnStart) {
+				
+				firstRun = false;
+				lblFirst.setVisible(firstRun);
+			}
 		}
+		
 	}
+
+	
 }
