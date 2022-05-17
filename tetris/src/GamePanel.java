@@ -428,5 +428,9 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 	}
+<<<<<<< HEAD
 	
 }
+=======
+}
+>>>>>>> refs/remotes/origin/master
