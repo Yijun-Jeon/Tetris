@@ -36,6 +36,8 @@ public class GamePanel extends JPanel implements Runnable{
 		curX = new int [4];
 		curY = new int [4];
 		
+		color = Color.ORANGE;
+		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(720,600));
 		
@@ -81,7 +83,7 @@ public class GamePanel extends JPanel implements Runnable{
 		for(int i=0;i<4;i++) {
 			nextBlocks[i] = new BlockPanel();
 			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-			nextBlocks[i].setBlockColor(Color.BLUE);
+			nextBlocks[i].setBlockColor(Color.ORANGE);
 			nextPanel.add(nextBlocks[i]);
 		}
 		
@@ -194,6 +196,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
 		//nextBlocks[3].setBlockColor(Color.ORANGE);
+		
 		for(BlockPanel blockP : nextBlocks) blockP.repaint();
 	}
 	
