@@ -46,8 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(680,600));
-		
-<<<<<<< HEAD
+
 		//첫 이미지
 		firstImg = new ImageIcon("img/first.png");
 	    lblFirst = new JLabel(firstImg);
@@ -57,13 +56,6 @@ public class GamePanel extends JPanel implements Runnable{
        
 		stageImg = new ImageIcon("img/stage.png");
 		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
-=======
-		
-		btn = new JButton("재시도");
-		btn.addActionListener(new BtnListener());
-		
-		lblStage = new JLabel("STAGE", SwingConstants.CENTER);
->>>>>>> refs/heads/master
         lblStage.setFont(new Font("arial",Font.BOLD,15));
         lblStage.setForeground(new Color(68, 68, 173));
 		lblStage.setBounds(270,50,130,20);
