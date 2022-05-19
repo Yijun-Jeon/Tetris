@@ -368,68 +368,70 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 		
-		int check = 0, blank = 0;
-		if ((TetrisModel.GAMEBOARD[curY[0]][curX[0]] == 1) || (nBlock == 6 && TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) || (nBlock == 1 && TetrisModel.GAMEBOARD[curY[1]][curX[1]] == 1)) {
-			// Left Wall
-			check = 1;
-			if (nBlock == 3) { // ■■■■
-				for (int i = 1; i < 5; i++)
-					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0) // Move right 20
-						blank++;
-				if (blank < 4) // No space for 20
-					check = 4; 
+		int error = 0;
+		int space = 0;
+		try {
+			if(nBlock == 3 || nBlock == 4){
+				if(TetrisModel.GAMEBOARD[curY[0]][curX[0]] == 1){
+					error = 1;
+					for (int i = 1; i < 5; i++)
+						if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0) // Move right 20
+							space++;
+					if (space < 4) // No space for 20
+						error = 4;
+				}
+				else if(TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1){
+					// ■■■■ to Right Wall
+					error = 2;
+					for (int i = 1; i < 5; i++)
+						if (TetrisModel.GAMEBOARD[curY[2]][curX[2]-i] == 0) // Move left 40
+							space++;
+					if (space < 4)
+						error = 4;
+				}
+				else if(TetrisModel.GAMEBOARD[curY[3]][curX[3]] == 1){
+					// ■■■■ to Right Wall
+					error = 3;
+					for (int i = 1; i < 5; i++)
+						if (TetrisModel.GAMEBOARD[curY[3]][curX[3]-i] == 0) // Move left 20
+							space++;
+					if (space < 4)
+						error = 4;
+				}
 			}
-			else {
-				for (int i = 1; i < 4; i++)
-					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0)
-						blank++;
-				if (blank < 3)
-					check = 4;
+			else{
+				if((TetrisModel.GAMEBOARD[curY[0]][curX[0]] == 1) || (nBlock == 6 && TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) || (nBlock == 1 && TetrisModel.GAMEBOARD[curY[1]][curX[1]] == 1)){
+					error  = 1;
+					for (int i = 1; i < 4; i++)
+						if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0)
+							space++;
+					if (space < 3)
+						error = 4;
+				}
 			}
-		}
-		else if (TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) {
-			// ■■■■ to Right Wall
-			check = 2;
-			for (int i = 1; i < 5; i++)
-				if (TetrisModel.GAMEBOARD[curY[2]][curX[2]-i] == 0) // Move left 40
-					blank++;
-			if (blank < 4)
-				check = 4;
-		}
-		else if (TetrisModel.GAMEBOARD[curY[3]][curX[3]] == 1) {
-			// ■■■■ to Right Wall
-			check = 3;
-			for (int i = 1; i < 5; i++)
-				if (TetrisModel.GAMEBOARD[curY[3]][curX[3]-i] == 0) // Move left 20
-					blank++;
-			if (blank < 4)
-				check = 4;
-		}
+		}catch(ArrayIndexOutOfBoundsException e) {error = 4;}
 		
-		switch(check) {
+		switch(error) {
 		case 1:
 			width += TetrisModel.BLOCKSIZE;
-			rotation++;
-			rotation = rotation % 4;
+			rotation = ++rotation % 4;
 			break;
 		case 2:
 			width -= TetrisModel.BLOCKSIZE * 2;
-			rotation++;
-			rotation = rotation % 4;
+			rotation = ++rotation % 4;
 			break;
 		case 3:
 			width -= TetrisModel.BLOCKSIZE;
-			rotation++;
-			rotation = rotation % 4;
+			rotation = ++rotation % 4;
 			break;
 		case 4:
-			System.out.println("ban");
+			System.out.println("Invalid rotate!\n");
 			break;
 		default:
-			rotation++;
-			rotation = rotation % 4;			
+			rotation = ++rotation % 4;			
 		}
 	}
+
 	
 	public void start() {
 		if ( TetrisThread == null)
