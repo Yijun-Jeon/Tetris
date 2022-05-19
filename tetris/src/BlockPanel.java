@@ -9,7 +9,6 @@ public class BlockPanel{
 	BlockPanel() {
 		blockNum = 0;
 		blockColor = TetrisModel.COLOR[(int)(Math.random()*7)];
-
 	}
 
 	BlockPanel(int n, Color color) {
@@ -32,5 +31,4 @@ public class BlockPanel{
 	public void setBlockColor(Color color) {
 		blockColor = color;
 	}
-
 }
