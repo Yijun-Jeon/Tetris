@@ -76,8 +76,8 @@ public class TetrisModel {
 		new Color(255, 205, 74), //yellow
 		new Color(125, 178, 73), //green
 		new Color(24, 168, 241), //blue
-		new Color(154, 48, 174), //magenta
-		new Color(63, 204, 195), //cyan
+		new Color(154, 48, 174), //MAGENTA
+		new Color(63, 204, 195), //CYAN
 		
 	};
 }
