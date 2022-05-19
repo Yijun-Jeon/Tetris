@@ -27,6 +27,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private JDialog JD;
 	private Thread TetrisThread;
 	private JButton btn, btnStart;
+	private BtnListener btnL;
 	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog, lblFirst;
 	private ImageIcon backgroundImg, firstImg, startImg, scoreImg, stageImg;
 	
@@ -55,13 +56,32 @@ public class GamePanel extends JPanel implements Runnable{
 		silhouetteX = new int [4];
 		silhouetteY = new int [4];
 		tempY = new int [4];
+		
+		btnL = new BtnListener();
 
+		// Start Page
 		firstImg = new ImageIcon("./img/first.png");
 	    lblFirst = new JLabel(firstImg);
 	    lblFirst.setBounds(0,0,440,520);
 	    lblFirst.setVisible(firstRun);
 	    add(lblFirst);
+	    
+        startImg = new ImageIcon("./img/start.png");
+        btnStart = new JButton("");
+        btnStart.setIcon(startImg);
+        btnStart.setBounds(140, 300, 160, 50);
+        btnStart.setBackground(new Color(0,0,0,0));
+        btnStart.setForeground(new Color(0,0,0,0));
+        btnStart.setVisible(firstRun);
+        btnStart.setBorderPainted(false);
+        btnStart.addActionListener(btnL);
+        lblFirst.add(btnStart);
        
+        // Game Page
+        backgroundImg = new ImageIcon("./img/background.png");
+		sound("sound/bgm.wav");
+		
+        // stage
 		stageImg = new ImageIcon("./img/stage.png");
 		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
         lblStage.setFont(new Font("arial",Font.BOLD,15));
@@ -75,6 +95,7 @@ public class GamePanel extends JPanel implements Runnable{
         lblStageNum.setBounds(270,75,130,15);
 		add(lblStageNum);
 		
+		// score
 		scoreImg = new ImageIcon("./img/score.png");
 		lblScore = new JLabel(scoreImg,SwingConstants.CENTER);
         lblScore.setFont(new Font("arial",Font.BOLD,15));
@@ -88,29 +109,7 @@ public class GamePanel extends JPanel implements Runnable{
 		lblScoreNum.setBounds(270, 120, 130, 15);
 		add(lblScoreNum);
 		
-        lblDialog = new JLabel();
-  
-        startImg = new ImageIcon("./img/start.png");
-        btnStart = new JButton("");
-        btnStart.setIcon(startImg);
-        btnStart.setBounds(140, 300, 160, 50);
-        btnStart.setBackground(new Color(0,0,0,0));
-        btnStart.setForeground(new Color(0,0,0,0));
-        btnStart.setVisible(firstRun);
-        btnStart.setBorderPainted(false);
-        btnStart.addActionListener(new BtnListener());
-        lblFirst.add(btnStart);
-       
-    	btn = new JButton("RE-START");
-		btn.addActionListener(new BtnListener());
-        
-        JD = new JDialog();
-		JD.setTitle("SCORE");
-		JD.setSize(250,190);
-		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
-		JD.add(btn);
-		JD.add(lblDialog);
-		
+		// next block
 		nextPanel = new JPanel();
 		nextPanel.setBounds(270,160,140,340);
 		nextPanel.setBackground(new Color(236, 236, 237, 0));
@@ -124,9 +123,18 @@ public class GamePanel extends JPanel implements Runnable{
 			color = nextBlocks[i].getBlockColor();
 		}
 		
-		backgroundImg = new ImageIcon("./img/background.png");
-			
-		sound("sound/bgm.wav");
+		// re-start
+        lblDialog = new JLabel();
+       
+    	btn = new JButton("RE-START");
+		btn.addActionListener(btnL);
+        
+        JD = new JDialog();
+		JD.setTitle("SCORE");
+		JD.setSize(250,190);
+		JD.setLayout(new FlowLayout(FlowLayout.CENTER,150,30));
+		JD.add(btn);
+		JD.add(lblDialog);
 		
 		addKeyListener(new KeyBoardListener());
 		setFocusable(true);
@@ -149,7 +157,6 @@ public class GamePanel extends JPanel implements Runnable{
 		page.setColor(new Color(236, 236, 237, 255));
 		page.drawLine(28, 150, 250, 150);
 		
-		
 		lblScoreNum.setText(Integer.toString(score*100));
 		
 		drawNextBlocks(page);
@@ -158,13 +165,13 @@ public class GamePanel extends JPanel implements Runnable{
 		blockToWall();
 		makeWall(page);
 		
-		if (end == 1) {
+		if(end == 1){
 			blockToNext();
 			end = 0;
 		}
 	}
 	
-	public void drawNextBlocks(Graphics g) {
+	private void drawNextBlocks(Graphics g) {
 		for(int i = 0;i < 4;i++) {
 			for (int y = 0; y < 4; y++) {
 				for (int x = 0; x < 4; x++) {
@@ -177,9 +184,9 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 		
-	public void gameOverCheck() {
-		for (int i = 1; i < 11; i++) {
-			if (TetrisModel.GAMEBOARD[3][i] == 1) {
+	private void gameOverCheck() {
+		for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
+			if (TetrisModel.GAMEBOARD[3][x] == 1) {
 				gameOver = true;
 				lblDialog.setText(lblScoreNum.getText());
 				JD.setVisible(true);
@@ -187,14 +194,14 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	public void removeLine(int curCount, int lineCount, int silhouetteCount, Graphics g) {
-		for (int y = 0; y < 20; y++) {
-			for (int x = 1; x < 11 ; x++)
+	private void removeLine(int curCount, int lineCount, int silhouetteCount, Graphics g) {
+		for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++) {
+			for (int x = 1; x < TetrisModel.BOARDWIDTH ; x++)
 				if (TetrisModel.GAMEBOARD[y][x] == 1)
 					lineCount++;
-			if (lineCount == 10) {
+			if (lineCount == TetrisModel.BOARDWIDTH-1) {
 				for (int i = y; i > 1; i--) {
-					for (int j = 1; j < 11; j++) {
+					for (int j = 1; j < TetrisModel.BOARDWIDTH; j++) {
 						TetrisModel.GAMEBOARD[i][j] = 0;
 						TetrisModel.GAMEBOARD[i][j] = TetrisModel.GAMEBOARD[i-1][j];
 					}
@@ -209,28 +216,32 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	public void blockDown(int curCount, Graphics g) {
+	private void blockDown(int curCount, Graphics g) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					curX[curCount] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					curY[curCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					
 					g.setColor(color);
 					g.fill3DRect(curX[curCount]*TetrisModel.BLOCKSIZE+20, curY[curCount]*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+					
 					curCount++;
 				}
 			}
 		}
 	}
 	
-	public void makeSilhouette(int silhouetteCount, Graphics g) {
+	private void makeSilhouette(int silhouetteCount, Graphics g) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					silhouetteX[silhouetteCount] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
 					silhouetteY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					
 					tempY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
 					temp = 0;
+					
 					while (true) {
 						if (TetrisModel.GAMEBOARD[tempY[silhouetteCount]][silhouetteX[silhouetteCount]] == 0) {
 							temp += 20;
@@ -250,17 +261,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	public void makeWall(Graphics g) {
-		g.setColor(Color.gray);
-		for (int y = 0; y < 20; y++) {
-			for (int x = 1; x < 11; x++) {
-				if (TetrisModel.GAMEBOARD[y][x] == 1)
-					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
-			}
-		}
-	}
-	
-	public void blockToWall() {
+	private void blockToWall() {
 		try {
 			for (int i = 0; i < 4; i++) {
 				if (TetrisModel.GAMEBOARD[curY[i]+1][curX[i]] == 1) {
@@ -280,6 +281,16 @@ public class GamePanel extends JPanel implements Runnable{
 		}catch(ArrayIndexOutOfBoundsException e) { System.out.println("Error"); };
 	}
 	
+	public void makeWall(Graphics g) {
+		g.setColor(Color.gray);
+		for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++) {
+			for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
+				if (TetrisModel.GAMEBOARD[y][x] == 1)
+					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20, y*TetrisModel.BLOCKSIZE+90, TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE, true);
+			}
+		}
+	}
+	
 	public void blockToNext() {
 		nBlock = nextBlocks[0].getBlockNum();
 		color = nextBlocks[0].getBlockColor();
@@ -290,113 +301,7 @@ public class GamePanel extends JPanel implements Runnable{
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
 		nextBlocks[3].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]);
 	}
-	
-	public void rotationCheck() {
-		int count = 0;
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				int rotation2 = (rotation%4) + 1;
-				if (rotation2 == 4)
-					rotation2 = 0;
-				
-				if (TetrisModel.BLOCKS[nBlock][rotation2][i][j] == 1) {
-					curX[count] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
-					curY[count] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
-					count++;
-				}
-			}
-		}
-		
-		int check = 0, blank = 0;
-		if ((TetrisModel.GAMEBOARD[curY[0]][curX[0]] == 1) || (nBlock == 6 && TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) || (nBlock == 1 && TetrisModel.GAMEBOARD[curY[1]][curX[1]] == 1)) {
-			check = 1;
-			System.out.println("check1");
-			if (nBlock == 3) { // ㅡ block
-				for (int i = 1; i < 5; i++)
-					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0)
-						blank++;
-				if (blank < 4)
-					check = 4;
-				System.out.println(blank);
-			}
-			else {
-				for (int i = 1; i < 4; i++)
-					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0)
-						blank++;
-				if (blank < 3)
-					check = 4;
-				System.out.println("blank2");
-				System.out.println(blank);
-			}
-		}
-		else if (TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) {
-			check = 2;
-			System.out.println("check2");
-			for (int i = 1; i < 5; i++)
-				if (TetrisModel.GAMEBOARD[curY[2]][curX[2]-i] == 0)
-					blank++;
-			if (blank < 4)
-				check = 4;
-			System.out.println("blank2");
-			System.out.println(blank);
-		}
-		else if (TetrisModel.GAMEBOARD[curY[3]][curX[3]] == 1) {
-			check = 3;
-			System.out.println("check3");
-			for (int i = 0; i < 5; i++)
-				if (TetrisModel.GAMEBOARD[curY[3]][curX[3]-i] == 0)
-					blank++;
-			if (blank < 4)
-				check = 4;
-			System.out.println(blank);
-		}
-		
-		switch(check) {
-		case 1:
-			width += TetrisModel.BLOCKSIZE;
-			rotation++;
-			rotation = rotation % 4;
-			break;
-		case 2:
-			width -= TetrisModel.BLOCKSIZE * 2;
-			rotation++;
-			rotation = rotation % 4;
-			break;
-		case 3:
-			width -= TetrisModel.BLOCKSIZE;
-			rotation++;
-			rotation = rotation % 4;
-			break;
-		case 4:
-			System.out.println("ban");
-			break;
-		default:
-			rotation++;
-			rotation = rotation % 4;			
-		}
-	}
-
-	
-	public boolean collisionLeft() {
-		for (int i = 0; i < 4; i++)
-			if (TetrisModel.GAMEBOARD[curY[i]][curX[i]-1] == 1)
-				return true;
-		return false;
-	}
-	public boolean collisionRight() {
-		for (int i = 0; i < 4; i++)
-			if (TetrisModel.GAMEBOARD[curY[i]][curX[i]+1] == 1)
-				return true;
-		return false;
-	}
-	
-	private void rotateBlock() {
-		rotationCheck();
-		if(gameOver == false) {
-			weight = 340;
-			repaint();
-		}
-	}
+			
 	private void moveDown() {
 		if (gameOver == false) {
 			height += TetrisModel.BLOCKSIZE;
@@ -428,11 +333,110 @@ public class GamePanel extends JPanel implements Runnable{
 		repaint();
 	}
 	
+	private void rotateBlock() {
+		rotationCheck();
+		if(gameOver == false) {
+			weight = 340;
+			repaint();
+		}
+	}
+	
+	public boolean collisionLeft() {
+		for (int i = 0; i < 4; i++)
+			if (TetrisModel.GAMEBOARD[curY[i]][curX[i]-1] == 1)
+				return true;
+		return false;
+	}
+	public boolean collisionRight() {
+		for (int i = 0; i < 4; i++)
+			if (TetrisModel.GAMEBOARD[curY[i]][curX[i]+1] == 1)
+				return true;
+		return false;
+	}
+	
+	public void rotationCheck() {
+		int count = 0;
+		int rotation2 = (rotation+1) % 4;
+		
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (TetrisModel.BLOCKS[nBlock][rotation2][i][j] == 1) {
+					curX[count] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
+					curY[count] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					count++;
+				}
+			}
+		}
+		
+		int check = 0, blank = 0;
+		if ((TetrisModel.GAMEBOARD[curY[0]][curX[0]] == 1) || (nBlock == 6 && TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) || (nBlock == 1 && TetrisModel.GAMEBOARD[curY[1]][curX[1]] == 1)) {
+			// Left Wall
+			check = 1;
+			if (nBlock == 3) { // ■■■■
+				for (int i = 1; i < 5; i++)
+					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0) // Move right 20
+						blank++;
+				if (blank < 4) // No space for 20
+					check = 4; 
+			}
+			else {
+				for (int i = 1; i < 4; i++)
+					if (TetrisModel.GAMEBOARD[curY[0]][curX[0]+i] == 0)
+						blank++;
+				if (blank < 3)
+					check = 4;
+			}
+		}
+		else if (TetrisModel.GAMEBOARD[curY[2]][curX[2]] == 1) {
+			// ■■■■ to Right Wall
+			check = 2;
+			for (int i = 1; i < 5; i++)
+				if (TetrisModel.GAMEBOARD[curY[2]][curX[2]-i] == 0) // Move left 40
+					blank++;
+			if (blank < 4)
+				check = 4;
+		}
+		else if (TetrisModel.GAMEBOARD[curY[3]][curX[3]] == 1) {
+			// ■■■■ to Right Wall
+			check = 3;
+			for (int i = 1; i < 5; i++)
+				if (TetrisModel.GAMEBOARD[curY[3]][curX[3]-i] == 0) // Move left 20
+					blank++;
+			if (blank < 4)
+				check = 4;
+		}
+		
+		switch(check) {
+		case 1:
+			width += TetrisModel.BLOCKSIZE;
+			rotation++;
+			rotation = rotation % 4;
+			break;
+		case 2:
+			width -= TetrisModel.BLOCKSIZE * 2;
+			rotation++;
+			rotation = rotation % 4;
+			break;
+		case 3:
+			width -= TetrisModel.BLOCKSIZE;
+			rotation++;
+			rotation = rotation % 4;
+			break;
+		case 4:
+			System.out.println("ban");
+			break;
+		default:
+			rotation++;
+			rotation = rotation % 4;			
+		}
+	}
+	
 	public void start() {
 		if ( TetrisThread == null)
 			TetrisThread = new Thread(this);
 		TetrisThread.start();
 	}
+	
 	
 	public void run() {
 		while (true) {
@@ -459,7 +463,6 @@ public class GamePanel extends JPanel implements Runnable{
 			e.printStackTrace();
 		}
 	}
-	
 	
 	private class KeyBoardListener implements KeyListener {
 
@@ -489,8 +492,8 @@ public class GamePanel extends JPanel implements Runnable{
 			Object obj = e.getSource();
 			
 			gameOver = false;
-			for (int y = 0; y < 20; y++)
-				for (int x = 1; x < 11; x++)
+			for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
+				for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
 					TetrisModel.GAMEBOARD[y][x] = 0;
 			score = 0; width = 100; height = 0;
 			
@@ -502,6 +505,4 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		
 	}
-
-	
 }
