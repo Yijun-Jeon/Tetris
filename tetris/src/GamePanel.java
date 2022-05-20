@@ -541,6 +541,7 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			else if (obj == btnRestart) {
 				gameOver = false;
+				stageClear = false;
 				for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
 					for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
 						TetrisModel.GAMEBOARD[y][x] = 0;
