@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private int curX[], curY[], silhouetteX[], silhouetteY[], tempY[];
 	private JPanel nextPanel;
 	private JButton btnStart, btnRestart, btnNext;
-	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblDialog, lblFirst, lblSecond, lblThird;
+	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum, lblFirst, lblSecond, lblThird;
 	private Thread TetrisThread;
 	ImageIcon backgroundImg, firstImg, secondImg, thirdImg, startImg, scoreImg, stageImg, restartImg, nextImg;
 	
@@ -211,11 +211,17 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void stageClearCheck() {
-		if (score*100 >= 200) {
+		if (score*100 >= 100) {
 			stageClear = true;
-			lblThird.setVisible(stageClear);
-			btnNext.setVisible(stageClear);
-			lblStageNum.setText(Integer.toString(stage));
+			if (stage <= 4) {
+				lblThird.setVisible(stageClear);
+				btnNext.setVisible(stageClear);
+				lblStageNum.setText(Integer.toString(stage));
+			}
+			else if (stage >= 5) {
+				lblSecond.setVisible(stageClear);
+				btnRestart.setVisible(stageClear);
+			}
 		}
 	}
 	
@@ -465,7 +471,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public void run() {
 		while (true) {
 			try {
-				TetrisThread.sleep(300);
+				TetrisThread.sleep(600-stage*100);
 				if (!firstRun && !gameOver && !stageClear)
 					down();
 			} catch(InterruptedException e) {
@@ -523,11 +529,12 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			if (obj == btnRestart) {
 				gameOver = false;
+				stageClear = false;
 				for (int y = 0; y < 20; y++)
 					for (int x = 1; x < 11; x++)
 						TetrisModel.GAMEBOARD[y][x] = 0;
 				lblSecond.setVisible(gameOver);
-				score = 0; width = 100; height = 0;
+				score = 0; width = 100; height = 0; stage = 1;
 			}
 			if (obj == btnNext) {
 				stageClear = false;
