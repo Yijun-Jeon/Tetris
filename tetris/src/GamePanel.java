@@ -76,7 +76,7 @@ public class GamePanel extends JPanel implements Runnable{
 	    
 	    thirdImg = new ImageIcon("./img/empty.png");
 	    lblThird = new JLabel(thirdImg);
-	    lblThird.setBounds(50,180,350,250);
+	    lblThird.setBounds(40,180,350,250);
 	    lblThird.setVisible(stageClear);
 	    add(lblThird);
 	    
@@ -152,7 +152,7 @@ public class GamePanel extends JPanel implements Runnable{
 		nextImg = new ImageIcon("./img/next.png");
 		btnNext = new JButton("");
 		btnNext.setIcon(nextImg);
-		btnNext.setBounds(95, 135, 160, 50);
+		btnNext.setBounds(90, 135, 160, 50);
 		btnNext.setBackground(Color.white);
 		btnNext.setForeground(new Color(0,0,0,0));
 		btnNext.setVisible(stageClear);

@@ -7,7 +7,7 @@ public class MyTetrisPanel extends JPanel {
 	GamePanel gamePanel;
 	
 	public MyTetrisPanel() {
-		setPreferredSize(new Dimension(440,520));
+		setPreferredSize(new Dimension(430,520));
 		setBackground(new Color(111, 137, 168));
 		setLayout(null);
 		
