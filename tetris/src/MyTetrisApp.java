@@ -1,4 +1,4 @@
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class MyTetrisApp {
 
@@ -8,10 +8,11 @@ public class MyTetrisApp {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
-		MyTetrisPanel primary = new MyTetrisPanel();
+		
+		GamePanel primary = new GamePanel();
 		frame.getContentPane().add(primary);
 		
 		frame.pack();
 		frame.setVisible(true);
-	} //main
-} //MyTetrisApp
+	}
+}
