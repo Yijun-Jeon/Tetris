@@ -8,6 +8,7 @@ public class MyTetrisApp {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
+		
 		MyTetrisPanel primary = new MyTetrisPanel();
 		frame.getContentPane().add(primary);
 		

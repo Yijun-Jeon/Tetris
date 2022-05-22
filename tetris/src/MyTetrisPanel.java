@@ -4,8 +4,10 @@ import javax.swing.JPanel;
 
 public class MyTetrisPanel extends JPanel {
 	
-	GamePanel gamePanel;
+	// 인스턴스 데이터
+	private GamePanel gamePanel;
 	
+	// 생성자
 	public MyTetrisPanel() {
 		setPreferredSize(new Dimension(430,520));
 		setBackground(new Color(111, 137, 168));

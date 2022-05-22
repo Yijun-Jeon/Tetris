@@ -1,9 +1,18 @@
 import java.awt.Color;
 
+/* 테트리스 블록과 게임보드의 기본 정보를 제공하는 클래스
+ 모든 데이터는 static 변수로 클래스명으로 직접 접근 가능
+ */
 public class TetrisModel {
 
-	public static final int BLOCKSIZE = 20;
-	public static final int BLOCKS[][][][] = {
+	public static final int BLOCKSIZE = 20; // 한 블록 칸의 사이즈
+	
+	/* 총 7가지의 모양의 테트리스 블록
+	 * 90도마다 회전시켰을 때의 4가지의 경우 
+	 * 4 X 4 의 행렬으로 하나의 블록을 표현
+	 * BLOCKS[블록모양][회전][행렬 행][행렬 열]
+	 */
+	public static final int BLOCKS[][][][] = { 
 	         {  // ■
 	        	// ■■■
 	        	{{0,0,0,0},{1,0,0,0},{1,1,1,0},{0,0,0,0}},
@@ -53,8 +62,11 @@ public class TetrisModel {
 	            {{0,1,0,0},{0,1,1,0},{0,0,1,0},{0,0,0,0}}}
 	};
 	
-	// width : 10 , height : 20
-	public static final int[][] GAMEBOARD = {
+	/* 테트리스 게임보드를 22 X 12 의 행렬로 표현
+	 * 게임보드 내에서 1은 벽을 의미하여 블록이 자리할 수 없음
+	 * 첫 행은 게임보드의 최상단, 마지막 행은 게임보드의 최하단 의미
+	 */
+	public static int[][] GAMEBOARD = {
 			{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 			{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 			{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -77,10 +89,15 @@ public class TetrisModel {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
-	
+
+	// GamePanel class에서 게임보드 관리를 편하게 하기 위한 높이와 너비 상수
 	public static final int BOARDWIDTH = 11;
 	public static final int BOARDHEIGHT = 20;
 	
+	
+	/* BlockModel class의 객체가 가질 수 있는 7가지의 블록 색상 정의 후
+	 * TetrisModel.COLOR[(int)(Math.random()*7)] 으로 랜덤으로 지정  
+	 */
 	public static final Color[] COLOR = {
 		new Color(252, 82, 48),  //red
 		new Color(253, 159, 40), //orange
@@ -89,6 +106,5 @@ public class TetrisModel {
 		new Color(24, 168, 241), //blue
 		new Color(154, 48, 174), //magenta
 		new Color(63, 204, 195), //cyan
-		
 	};
 }
