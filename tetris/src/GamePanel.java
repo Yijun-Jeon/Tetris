@@ -83,42 +83,29 @@ public class GamePanel extends JPanel implements Runnable{
 		tempY = new int [4];
 		
 		btnL = new BtnListener();
-
-		// 시작 페이지
+		
+		//JLabel
+		// 시작 화면
 		firstImg = new ImageIcon("./img/first.png");
 	    lblFirst = new JLabel(firstImg);
 	    lblFirst.setBounds(0,0,440,520);
 	    lblFirst.setVisible(firstRun || gameOver || stageClear);
 	    add(lblFirst);
 	    
+	    // 게임오버 화면
 	    secondImg = new ImageIcon("./img/first.png");
 	    lblSecond = new JLabel(secondImg);
 	    lblSecond.setBounds(0,0,440,520);
 	    lblSecond.setVisible(gameOver);
 	    add(lblSecond);
 	    
+	    // 넥스트 스테이지 화면
 	    thirdImg = new ImageIcon("./img/empty.png");
 	    lblThird = new JLabel(thirdImg);
 	    lblThird.setBounds(40,180,350,250);
 	    lblThird.setVisible(stageClear);
 	    add(lblThird);
-	    
-        startImg = new ImageIcon("./img/start.png");
-        btnStart = new JButton("");
-        btnStart.setIcon(startImg);
-        btnStart.setBounds(140, 300, 160, 50);
-        btnStart.setBackground(new Color(0,0,0,0));
-        btnStart.setForeground(new Color(0,0,0,0));
-        btnStart.setVisible(firstRun);
-        btnStart.setBorderPainted(false);
-        // btnL의 액션리스너 추가
-        btnStart.addActionListener(btnL);
-        lblFirst.add(btnStart);
-       
-        // 게임 페이지
-        backgroundImg = new ImageIcon("./img/background.png");
-		sound("sound/bgm.wav");
-		
+	   
         // 1. 스테이지
 		stageImg = new ImageIcon("./img/stage.png");
 		lblStage = new JLabel(stageImg, SwingConstants.CENTER);
@@ -153,16 +140,30 @@ public class GamePanel extends JPanel implements Runnable{
 		nextPanel.setBounds(270,160,140,340);
 		nextPanel.setBackground(new Color(236, 236, 237, 0));
 		add(nextPanel);
-		
+				
 		nextBlocks = new BlockModel[4];
 		// 4. 블록 모두 0~6의 랜덤 정수로 모양과 색깔 부여
 		for(int i=0;i<4;i++) {
-			nextBlocks[i] = new BlockModel();
-			nextBlocks[i].setBlockNum((int)(Math.random()*7));
-			nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
-		}
+		nextBlocks[i] = new BlockModel();
+		nextBlocks[i].setBlockNum((int)(Math.random()*7));
+		nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
+			}
 		
-		// 재시작 페이지
+		//JButton
+		// 시작 화면의 start 버튼
+        startImg = new ImageIcon("./img/start.png");
+        btnStart = new JButton("");
+        btnStart.setIcon(startImg);
+        btnStart.setBounds(140, 300, 160, 50);
+        btnStart.setBackground(new Color(0,0,0,0));
+        btnStart.setForeground(new Color(0,0,0,0));
+        btnStart.setVisible(firstRun);
+        btnStart.setBorderPainted(false);
+        // btnL의 액션리스너 추가
+        btnStart.addActionListener(btnL);
+        lblFirst.add(btnStart);
+		
+		// restart 버튼
 		restartImg = new ImageIcon("./img/restart.png");
 		btnRestart = new JButton("");
 		btnRestart.setIcon(restartImg);
@@ -174,7 +175,7 @@ public class GamePanel extends JPanel implements Runnable{
 		btnRestart.addActionListener(btnL);
 		lblSecond.add(btnRestart);
 		
-		// 스테이지 클리어 페이지
+		// next stage 버튼
 		nextImg = new ImageIcon("./img/next.png");
 		btnNext = new JButton("");
 		btnNext.setIcon(nextImg);
@@ -185,6 +186,12 @@ public class GamePanel extends JPanel implements Runnable{
 		btnNext.setBorderPainted(false);
 		btnNext.addActionListener(btnL);
 		lblThird.add(btnNext);
+
+        // 게임 배경화면
+        backgroundImg = new ImageIcon("./img/background.png");
+        
+        // 게임 배경음 실행 메소드
+		sound("sound/bgm.wav");
 		
 		// GamePanel 내에서 키보드를 통한 블록이동을 위해 키보드 리스너 추가 
 		addKeyListener(new KeyBoardListener());
@@ -209,8 +216,6 @@ public class GamePanel extends JPanel implements Runnable{
 		setBackground(new Color(15,24,55));
 		
 		page.drawImage(backgroundImg.getImage(), 0, 0, null);
-		// 꼭 필요?
-		//setOpaque(false);
 	
 		page.setColor(new Color(236, 236, 237, 127));
 		page.fillRoundRect(28, 95, 222, 405, 20,20); // 게임보드
@@ -335,6 +340,9 @@ public class GamePanel extends JPanel implements Runnable{
 		makeSilhouette(g);
 	}
 	
+	/* 블록의 각 구성단위가 최대로 내려갈 수 있는 거리를 temp로 계산하여 tempY에 저장
+	 * tempY의 최소값을 weight로 선택하여 블록의 현재 위치에서 weight만큼 내려간 위치에 실루엣을 그림
+	*/
 	private void makeSilhouette(Graphics g) {
 		int silhouetteCount = 0;
 		int temp = 0;
@@ -343,28 +351,28 @@ public class GamePanel extends JPanel implements Runnable{
 				if(silhouetteCount == 4) break;
 				if (TetrisModel.BLOCKS[nBlock][rotation][i][j] == 1) {
 					silhouetteX[silhouetteCount] = (j*TetrisModel.BLOCKSIZE+width)/TetrisModel.BLOCKSIZE;
-					silhouetteY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
+					silhouetteY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE; //블록의 현재 위치
 					
-					tempY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE;
-					temp = 0;
+					tempY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height)/TetrisModel.BLOCKSIZE; //tempY 초기화
+					temp = 0; //temp 초기화
 					
 					while (true) {
-						if (TetrisModel.GAMEBOARD[tempY[silhouetteCount]][silhouetteX[silhouetteCount]] == 0) {
-							temp += 20;
-							tempY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height+temp)/TetrisModel.BLOCKSIZE;
+						if (TetrisModel.GAMEBOARD[tempY[silhouetteCount]][silhouetteX[silhouetteCount]] == 0) { //gameboard가 빈 칸이면
+							temp += 20; //temp를 증가시키고
+							tempY[silhouetteCount] = (i*TetrisModel.BLOCKSIZE+height+temp)/TetrisModel.BLOCKSIZE; //tempY 업데이트해서 아래 칸으로 이동
 						}
-						else
+						else //gameboard가 빈칸이 아니면 무한루프 탈출
 							break;
 					}
-					if (weight > temp)
-						weight = temp;
+					if (weight > temp) //while문에서 계산된 temp가 weight보다 작으면
+						weight = temp; //weight를 temp로 업데이트 -> temp 중에 최소값이 weight로 결정됨
 					silhouetteCount++;
 				}
 			}
 		}
 		for (int i = 0; i < 4; i++) {
 			g.drawRect(silhouetteX[i]*TetrisModel.BLOCKSIZE+20,
-					(silhouetteY[i]+weight/20)*TetrisModel.BLOCKSIZE+70,
+					(silhouetteY[i]+weight/20)*TetrisModel.BLOCKSIZE+70, //블록의 현재 위치에서 weight만큼 내려가서 실루엣을 그림
 					TetrisModel.BLOCKSIZE, TetrisModel.BLOCKSIZE);
 		}
 	}
@@ -581,14 +589,15 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	// ** 사운드 관련 메소드 **
+	// ** 사운드 재생 메소드 **
 	private static void sound(String file) {
 		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
-			Clip clip = AudioSystem.getClip();
-			clip.open(ais);
-			clip.start();
-			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			//입력 받은 파일을 열어주고 버퍼를 이용해서 빠른 속도로 읽음
+			AudioInputStream bgm = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			Clip clip = AudioSystem.getClip(); //사운드 재생하는 데 사용하는 클립 가져옴
+			clip.open(bgm); 
+			clip.start(); // 사운드 재생
+			clip.loop(Clip.LOOP_CONTINUOUSLY); // 사운드 반복
 
 		} catch (Exception e) {
 			e.printStackTrace();
