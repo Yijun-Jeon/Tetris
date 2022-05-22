@@ -9,7 +9,7 @@ public class MyTetrisApp {
 		frame.setResizable(false);
 		
 		
-		MyTetrisPanel primary = new MyTetrisPanel();
+		GamePanel primary = new GamePanel();
 		frame.getContentPane().add(primary);
 		
 		frame.pack();

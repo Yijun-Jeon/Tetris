@@ -54,8 +54,10 @@ public class GamePanel extends JPanel implements Runnable{
 	// ** 생성자 **
 	public GamePanel() {
 		
+		setPreferredSize(new Dimension(430,520));
+		setBounds(0,0,440,520);
+		setBackground(new Color(111, 137, 168));
 		setLayout(null);
-		setPreferredSize(new Dimension(680,600));
 				
 		// 블록의 위치가 게임보드 중앙 상단에서 시작하기 위한 초기값
 		width = 100;
