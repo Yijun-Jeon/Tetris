@@ -7,7 +7,7 @@ public class TetrisModel {
 
 	public static final int BLOCKSIZE = 20; // 한 블록 칸의 사이즈
 	
-	/* 총 7가지의 모양의 테트리스 블록
+	/* # 총 7가지의 모양의 테트리스 블록
 	 * 90도마다 회전시켰을 때의 4가지의 경우 
 	 * 4 X 4 의 행렬으로 하나의 블록을 표현
 	 * BLOCKS[블록모양][회전][행렬 행][행렬 열]

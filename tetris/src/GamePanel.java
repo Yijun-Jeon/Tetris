@@ -22,8 +22,8 @@ public class GamePanel extends JPanel implements Runnable{
 	private int width,height; // 게임보드 내 블록 좌우, 상하 위치
 	private int end; // 블록 차례 종료
 	private int weight; // 게임보드 내 실루엣 상하 위치
-	private int curX[], curY[]; // 블록의 한 칸마다 게임보드 내 좌표 -> ppt 필요
-	private int silhouetteX[], silhouetteY[]; // 블록의 한 칸마다 실루엣 좌표 -> ppt 필요
+	private int curX[], curY[]; // # 블록의 한 칸마다 게임보드 내 좌표
+	private int silhouetteX[], silhouetteY[]; // 블록의 한 칸마다 실루엣 좌표
 	private int tempX[], tempY[];
 
 	
@@ -36,7 +36,6 @@ public class GamePanel extends JPanel implements Runnable{
 	private boolean stageClear;
 	
 	// 3. 다음 블록 데이터
-	private JPanel nextPanel;
 	private BlockModel[] nextBlocks; // 다음 블록 4개를 담기 위한 BlockModel 객체 배열
 	
 	// 4. GUI 관련 데이터
@@ -45,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private JButton btnNext; // 다음 스테이지 진행 버튼
 	private BtnListener btnL;
 	private JLabel lblScoreNum, lblScore, lblStage, lblStageNum; // 게임 진행 관련 레이블
-	private JLabel lblFirst, lblSecond, lblThird; // 이미지 관련 레이블
+	private JLabel lblFirst, lblSecond, lblThird; // # 이미지 관련 레이블
 	private ImageIcon backgroundImg, firstImg, secondImg, thirdImg, startImg, scoreImg, stageImg, restartImg, nextImg;
 	
 	// 5. 쓰레드 데이터
@@ -86,7 +85,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		btnL = new BtnListener();
 		
-		//JLabel
+		// JLabel
 		// 시작 화면
 		firstImg = new ImageIcon("./img/first.png");
 	    lblFirst = new JLabel(firstImg);
@@ -137,19 +136,14 @@ public class GamePanel extends JPanel implements Runnable{
 		lblScoreNum.setBounds(270, 120, 130, 15);
 		add(lblScoreNum);
 		
-		// 3. 다음 블록들
-		nextPanel = new JPanel();
-		nextPanel.setBounds(270,160,140,340);
-		nextPanel.setBackground(new Color(236, 236, 237, 0));
-		add(nextPanel);
-				
+		// 3. 다음 블록들		
 		nextBlocks = new BlockModel[4];
-		// 4. 블록 모두 0~6의 랜덤 정수로 모양과 색깔 부여
+		// 블록 모두 0~6의 랜덤 정수로 모양과 색깔 부여
 		for(int i=0;i<4;i++) {
-		nextBlocks[i] = new BlockModel();
-		nextBlocks[i].setBlockNum((int)(Math.random()*7));
-		nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
-			}
+			nextBlocks[i] = new BlockModel();
+			nextBlocks[i].setBlockNum((int)(Math.random()*7));
+			nextBlocks[i].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]); //
+		}
 		
 		//JButton
 		// 시작 화면의 start 버튼
@@ -161,7 +155,7 @@ public class GamePanel extends JPanel implements Runnable{
         btnStart.setForeground(new Color(0,0,0,0));
         btnStart.setVisible(firstRun);
         btnStart.setBorderPainted(false);
-        // btnL의 액션리스너 추가
+        // 액션리스너 추가
         btnStart.addActionListener(btnL);
         lblFirst.add(btnStart);
 		
@@ -174,6 +168,7 @@ public class GamePanel extends JPanel implements Runnable{
 		btnRestart.setForeground(new Color(0,0,0,0));
 		btnRestart.setVisible(gameOver);
 		btnRestart.setBorderPainted(false);
+        // 액션리스너 추가
 		btnRestart.addActionListener(btnL);
 		lblSecond.add(btnRestart);
 		
@@ -186,6 +181,7 @@ public class GamePanel extends JPanel implements Runnable{
 		btnNext.setForeground(new Color(0,0,0,0));
 		btnNext.setVisible(stageClear);
 		btnNext.setBorderPainted(false);
+        // 액션리스너 추가
 		btnNext.addActionListener(btnL);
 		lblThird.add(btnNext);
 
@@ -210,6 +206,43 @@ public class GamePanel extends JPanel implements Runnable{
 		start();
 	}
 	
+	// ** 액션 리스너 구현 클래스 **
+	private class BtnListener implements ActionListener {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			Object obj = e.getSource();
+			
+			// 게임 첫 시작을 위한 이벤트 핸들링
+			if(obj == btnStart) {
+                firstRun = false;
+                lblFirst.setVisible(firstRun);
+			}
+			// 게임 재시작을 위한 이벤트 핸들링
+			else if (obj == btnRestart) {
+				gameOver = false;
+				stageClear = false;
+				for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
+					for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
+						TetrisModel.GAMEBOARD[y][x] = 0;
+				lblSecond.setVisible(gameOver);
+				score = 0; width = 100; height = 0; stage = 1;
+			}
+			// 스테이지 클리어를 위한 이벤트 핸들링
+			else if (obj == btnNext) {
+				stageClear = false;
+				for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
+					for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
+						TetrisModel.GAMEBOARD[y][x] = 0;
+				for (int i = 0; i < 4; i++)
+					blockToNext();
+				lblThird.setVisible(stageClear);
+				score = 0; width = 100; height = 0; stage++;
+			}
+		}
+	}
+	
 	/* 키보드 이벤트 입력과 쓰레드 진행에 따라 repaint()를 통해
 	 * 블록과 게임보드 내에 변화가 있는지 검사하고 현재 상태를 계속해서 반영 
 	 */ 
@@ -229,7 +262,7 @@ public class GamePanel extends JPanel implements Runnable{
 		lblScoreNum.setText(Integer.toString(score*100));
 		lblStageNum.setText(Integer.toString(stage));
 		
-		// ppt 필요
+		// # 게임 진행 단계
 		drawNextBlocks(page); 						 // 다음 블록 그림
 		removeLine(); 								 // 라인 제거 검사
 		drawWall(page);								 // 벽 그림
@@ -261,42 +294,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	// ppt - 게임 오버 gif 필요
-	/* 게임보드의 블록 벽이 게임오버 라인에 도달했는지 검사하는 메소드
-	 * 만약 도달했다면, 재시작 페이지로 설정
-	 */
-	private void gameOverCheck() {
-		for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
-			if (TetrisModel.GAMEBOARD[3][x] == 1) {
-				gameOver = true;
-				lblSecond.setVisible(gameOver);
-				btnRestart.setVisible(gameOver);
-			}
-		}
-	}
-	
-	// ppt - 다음 스테이지 진행 gif 필요
-	/* 현재 점수가 일정 점수를 초과했는지 검사하는 메소드
-	 * 초과했다면, 다음 스테이지 진행 페이지로 설정
-	 * 만약 마지막 스테이지라면 재시작 페이지로 설정
-	 */
-	private void stageClearCheck() {
-		if (score*100 >= 100) {
-			stageClear = true;
-			if (stage <= 4) {
-				lblThird.setVisible(stageClear);
-				btnNext.setVisible(stageClear);
-				lblStageNum.setText(Integer.toString(stage));
-			}
-			else if (stage >= 5) {
-				lblSecond.setVisible(stageClear);
-				btnRestart.setVisible(stageClear);
-			}
-		}
-	}
-	
-	// ppt - gif 필요
-	/* 게임보드 내의 특정 라인이 블록으로 다 채워졌는지 검사하는 메소드
+	/* # 게임보드 내의 특정 라인이 블록으로 다 채워졌는지 검사하는 메소드
 	 * 한 라인이 다 채워졌다면, 상위 라인들의 값을 밑으로 내려서 블록 벽이 내려오도록 표현
 	 */
 	private void removeLine() {
@@ -315,6 +313,52 @@ public class GamePanel extends JPanel implements Runnable{
 				score++;
 			}
 			lineCount = 0;
+		}
+	}
+	
+	// 게임보드 내의 블록 벽을 그리는 메소드
+	private void drawWall(Graphics g) {
+		g.setColor(Color.gray);
+		for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++) {
+			for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
+				if (TetrisModel.GAMEBOARD[y][x] == 1)
+					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20,
+							y*TetrisModel.BLOCKSIZE+90,
+							TetrisModel.BLOCKSIZE,
+							TetrisModel.BLOCKSIZE, true);
+			}
+		}
+	}
+	
+	/* # 게임보드의 블록 벽이 게임오버 라인에 도달했는지 검사하는 메소드
+	 * 만약 도달했다면, 재시작 페이지로 설정
+	 */
+	private void gameOverCheck() {
+		for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
+			if (TetrisModel.GAMEBOARD[3][x] == 1) {
+				gameOver = true;
+				lblSecond.setVisible(gameOver);
+				btnRestart.setVisible(gameOver);
+			}
+		}
+	}
+	
+	/* # 현재 점수가 일정 점수를 초과했는지 검사하는 메소드
+	 * 초과했다면, 다음 스테이지 진행 페이지로 설정
+	 * 만약 마지막 스테이지라면 재시작 페이지로 설정
+	 */
+	private void stageClearCheck() {
+		if (score*100 >= 100) {
+			stageClear = true;
+			if (stage <= 4) {
+				lblThird.setVisible(stageClear);
+				btnNext.setVisible(stageClear);
+				lblStageNum.setText(Integer.toString(stage));
+			}
+			else if (stage >= 5) {
+				lblSecond.setVisible(stageClear);
+				btnRestart.setVisible(stageClear);
+			}
 		}
 	}
 	
@@ -379,7 +423,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	/* 블록이 벽에 착지했는지 검사하는 메소드
+	/* # 블록이 벽에 착지했는지 검사하는 메소드
 	 * 착지했다면, 게임보드에 반영
 	 * 다음 블록 진행을 위한 현재 블록 데이터 초기화
 	 */
@@ -401,20 +445,6 @@ public class GamePanel extends JPanel implements Runnable{
 		}catch(ArrayIndexOutOfBoundsException e) { System.out.println("Block to Wall Error"); };
 	}
 	
-	// 게임보드 내의 블록 벽을 그리는 메소드
-	private void drawWall(Graphics g) {
-		g.setColor(Color.gray);
-		for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++) {
-			for (int x = 1; x < TetrisModel.BOARDWIDTH; x++) {
-				if (TetrisModel.GAMEBOARD[y][x] == 1)
-					g.fill3DRect(x*TetrisModel.BLOCKSIZE+20,
-							y*TetrisModel.BLOCKSIZE+90,
-							TetrisModel.BLOCKSIZE,
-							TetrisModel.BLOCKSIZE, true);
-			}
-		}
-	}
-	
 	/* 현재 블록을 바로 다음 차례 블록으로 바꾸어주는 메소드
 	 * 선입선출로 queue의 역할을 하게 함
 	 */
@@ -427,6 +457,31 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		nextBlocks[3].setBlockNum((int)(Math.random()*7));
 		nextBlocks[3].setBlockColor(TetrisModel.COLOR[(int)(Math.random()*7)]);
+	}
+	
+	// ** 키 리스너 구현 클래스 **
+	private class KeyBoardListener implements KeyListener {
+
+		// 키를 계속 누르고 있는 경우 허용
+		@Override
+		public void keyPressed(KeyEvent e) { 
+			int keyCode = e.getKeyCode();
+			if (keyCode == KeyEvent.VK_UP)
+				rotateBlock();
+			if (keyCode == KeyEvent.VK_DOWN)
+				moveDown();
+			if (keyCode == KeyEvent.VK_LEFT)
+				moveLeft();
+			if (keyCode == KeyEvent.VK_RIGHT)
+				moveRight();
+		}
+		// 키를 계속 누르고 있는 경우 배제
+		public void keyReleased(KeyEvent e) {
+			int keyCode = e.getKeyCode();
+			if (keyCode == KeyEvent.VK_SPACE)
+				bTeleport = true;
+		}
+		public void keyTyped(KeyEvent e) {}
 	}
 	
 	// 블록 이동 관련 메소드
@@ -481,8 +536,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 	}
 	
-	// ppt 필요 -> 행렬을 통해 각 블록마다 회전 경우를 설명
-	/* 블록 회전시 벽과 겹치거나 회전 여유공간이 없는 경우를 검사하는 메소드
+	/* # 블록 회전시 벽과 겹치거나 회전 여유공간이 없는 경우를 검사하는 메소드
 	 * 검사의 기준은 항상 게임보드 내에서 상대적으로 위치하는 블록의 4 X 4 행렬 내의 값
 	 * 예외를 4개의 케이스로 나누어 벽과 겹치는 경우는 벽에서 필요공간만큼 멀어지게 처리
 	 * 회전 여유공간이 없는 경우는 회전 자체를 막고 콘솔 출력을 통해 알려줌
@@ -515,7 +569,6 @@ public class GamePanel extends JPanel implements Runnable{
 						error = 4;
 				}
 				else if(TetrisModel.GAMEBOARD[tempY[2]][tempX[2]] == 1){ // 오른쪽 벽과 두 칸이 겹치게 됨
-					// ■■■■ to Right Wall
 					error = 2;
 					for (int i = 1; i < 5; i++)
 						if (TetrisModel.GAMEBOARD[tempY[2]][tempX[2]-i] == 0) 
@@ -524,7 +577,6 @@ public class GamePanel extends JPanel implements Runnable{
 						error = 4;
 				}
 				else if(TetrisModel.GAMEBOARD[tempY[3]][tempX[3]] == 1){ // 오른쪽 벽과 한 칸이 겹치게 됨
-					// ■■■■ to Right Wall
 					error = 3;
 					for (int i = 1; i < 5; i++)
 						if (TetrisModel.GAMEBOARD[tempY[3]][tempX[3]-i] == 0)
@@ -537,7 +589,7 @@ public class GamePanel extends JPanel implements Runnable{
 				if((TetrisModel.GAMEBOARD[tempY[0]][tempX[0]] == 1) ||
 						(nBlock == 6 && TetrisModel.GAMEBOARD[tempY[2]][tempX[2]] == 1) ||//  ■■ 
 			            																	// ■■
-						(nBlock == 1 && TetrisModel.GAMEBOARD[tempY[1]][tempX[1]] == 1)) //   ■
+						(nBlock == 1 && TetrisModel.GAMEBOARD[tempY[1]][tempX[1]] == 1)) //     ■
 				{ 																	       // ■■■
 					error  = 1;
 					for (int i = 1; i < 4; i++)
@@ -603,68 +655,6 @@ public class GamePanel extends JPanel implements Runnable{
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	// ** 키 리스너 구현 클래스 **
-	private class KeyBoardListener implements KeyListener {
-
-		// 키를 계속 누르고 있는 경우 허용
-		@Override
-		public void keyPressed(KeyEvent e) { 
-			int keyCode = e.getKeyCode();
-			if (keyCode == KeyEvent.VK_UP)
-				rotateBlock();
-			if (keyCode == KeyEvent.VK_DOWN)
-				moveDown();
-			if (keyCode == KeyEvent.VK_LEFT)
-				moveLeft();
-			if (keyCode == KeyEvent.VK_RIGHT)
-				moveRight();
-		}
-		// 키를 계속 누르고 있는 경우 배제
-		public void keyReleased(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if (keyCode == KeyEvent.VK_SPACE)
-				bTeleport = true;
-		}
-		public void keyTyped(KeyEvent e) {}
-	}
-	
-	// ** 액션 리스너 구현 클래스 **
-	private class BtnListener implements ActionListener {
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			Object obj = e.getSource();
-			
-			// 게임 첫 시작을 위한 이벤트 핸들링
-			if(obj == btnStart) {
-                firstRun = false;
-                lblFirst.setVisible(firstRun);
-			}
-			// 게임 재시작을 위한 이벤트 핸들링
-			else if (obj == btnRestart) {
-				gameOver = false;
-				stageClear = false;
-				for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
-					for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
-						TetrisModel.GAMEBOARD[y][x] = 0;
-				lblSecond.setVisible(gameOver);
-				score = 0; width = 100; height = 0; stage = 1;
-			}
-			// 스테이지 클리어를 위한 이벤트 핸들링
-			else if (obj == btnNext) {
-				stageClear = false;
-				for (int y = 0; y < TetrisModel.BOARDHEIGHT; y++)
-					for (int x = 1; x < TetrisModel.BOARDWIDTH; x++)
-						TetrisModel.GAMEBOARD[y][x] = 0;
-				for (int i = 0; i < 4; i++)
-					blockToNext();
-				lblThird.setVisible(stageClear);
-				score = 0; width = 100; height = 0; stage++;
-			}
 		}
 	}
 }
